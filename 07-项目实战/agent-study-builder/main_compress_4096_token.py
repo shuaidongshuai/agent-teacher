@@ -1,14 +1,61 @@
 #!/usr/bin/env python3
 """
-一个使用 ReAct 模式的学习资料整理 Agent。
+结果日志：
 
-核心特点：
-1. LLM 每一轮先思考当前任务状态
-2. LLM 自主决定是否调用工具、调用什么工具
-3. Agent 负责执行工具，并把结果反馈给 LLM
-4. 循环直到 LLM 主动宣布任务完成
+=== ReAct Study Material Agent ===
+主题：炒股入门
+适用人群：初学者
+输出目录：/Users/xxx/Documents/AI/agent/07-项目实战/agent-study-builder/generated/炒股入门
+是否检测到 LLM：True
+LLM 决策轮数：4
+工具调用次数：3
 
-这比“LLM 只生成一次答案”更接近真正的 Agent。
+[执行轨迹]
+1. Thought：首先检查目标目录是否存在并查看其内容，然后在该目录下创建或覆盖教学文档文件，文档应包含主标题、目录、学习目标、概念与例子、总结。完成后确认完成。现在列出目标目录内容。
+   Action：list_dir
+   Action Input：{"path": "/Users/xxx/Documents/AI/agent/07-项目实战/agent-study-builder/generated/炒股入门"}
+   Observation：{
+  "tool_name": "list_dir",
+  "success": true,
+  "message": "成功列出目录：/Users/xxx/Documents/AI/agent/07-项目实战/agent-study-builder/generated/炒股入门",
+  "payload": {
+    "entries": []
+  }
+}
+2. Thought：文档已写入目标目录下的文件。下一步检查文件是否存在以确认完成。
+   Action：file_exists
+   Action Input：{"path": "/Users/xxx/Documents/AI/agent/07-项目实战/agent-study-builder/generated/炒股入门/炒股入门_初学者指南.md"}
+   Observation：{
+  "tool_name": "file_exists",
+  "success": true,
+  "message": "存在性检查完成：炒股入门_初学者指南.md -> False",
+  "payload": {
+    "exists": false,
+    "path": "/Users/xxx/Documents/AI/agent/07-项目实战/agent-study-builder/generated/炒股入门/炒股入门_初学者指南.md"
+  }
+}
+3. Thought：目标目录为空且目标文件不存在。接下来在该目录下创建教学文档文件“炒股入门_初学者指南.md”，内容包含主标题、目录、学习目标、概念与例子、总结。写入完成后确认。
+   Action：write_file
+   Action Input：{"path": "/Users/xxx/Documents/AI/agent/07-项目实战/agent-study-builder/generated/炒股入门/炒股入门_初学者指南.md",
+   "content": "# 炒股入门（初学者指南）\n\n目录\n\n1. 学习目标\n2. 基本概念\n   2.1 股票是什么\n   2.2 交易市场与交易时间\n   2.3 买卖委托与成交\n   2.4 常见投资风格与策略\n3. 关键指标与工具\n   3.1 K线与成交量\n   3.2 常用技术指标（均线、MACD、RSI等）\n   3.3 基本面要点（财报、估值指标）\n4. 风险管理与心态\n   4.1 仓位与止损\n   4.2 分散投资与资产配置\n   4.3 投资心态与纪律\n5. 实例讲解\n   5.1 选股示例（从基本面筛选到技术面确认）\n   5.2 买入、持有与卖出流程示例\n6. 总结\n\n学习目标\n\n- 让初学者理解股票的基本概念与交易流程。\n- 掌握常见的技术与基本面分析要点，能进行简单的选股判断。\n- 学会基本的风险管理方法并建立合理的交易/投资心态。\n\n概念与例子\n\n1. 股票是什么\n- 概念：股票代表公司所有权的一部分。持有股票即可分享公司未来利润（分红）与风险（股价波动）。\n- 例子：你购买了A公司100股，即成为A公司的小股东，若公司盈利并分红，你按持股比例获得分红；若公司经营不善导致股价下跌，你的资产也会缩水。\n\n2. 交易市场与交易时间\n- 概念：股票在证券交易所买卖（如上海证券交易所、深圳证券交易所、港交所等），交易有固定时间与规则（如T+1制度、交易时间段）。\n- 例子：在A股市场（大陆）通常为上午9:30-11:30，下午13:00-15:00。T+1表示当天买入后无法当天卖出（只能次日及以后卖出）。\n\n3. 买卖委托与成交\n- 概念：投资者通过证券账户下达买卖委托（限价委托、市价委托等），交易所将按照价格优先、时间优先等规则撮合成交。\n- 例子：你以限价10.00元下买单，若卖方愿意以或低于10.00元卖出，交易即成交。\n\n4. 常见投资风格与策略\n- 概念：包括长期价值投资、短线交易、波段交易等。不同风格对时间、风险承受度和操作频率有不同要求。\n- 例子：价值投资者关注公司长期基本面，可能持股数年；短线交易者关注日内或数日波动，频繁进出。\n\n关键指标与工具\n\n1. K线与成交量\n- 概念：K线描述一段时间内的开盘、收盘、最高、最低价；成交量反映交易活跃度。\n- 例子：一根长阳线且伴随放量，通常表示买方强势；缩量下跌可能表示抛压有限。\n\n2. 常用技术指标\n- 均线（MA）：反映价格平均水平，常用均线包括5、10、20、60日等。\n  例子：股价上穿20日均线并放量，可能是短期转强信号。\n- MACD：衡量价格动能的指标，DIF与DEA金叉/死叉常被用于买卖信号参考。\n  例子：MACD由下向上金叉，且柱线由负转正，可能提示趋势回升。\n- RSI：超买超卖指标，RSI>70常被视为超买，RSI<30视为超卖。\n  例子：RSI处于30附近并开始回升，可能是止跌反弹的早期信号。\n\n3. 基本面要点\n- 财报：关注营收、净利润、毛利率、净利率、现金流等核心数据。\n- 估值指标：市盈率（PE）、市净率（PB）等用于判断估值是否合理。\n- 例子：某公司连续两个季度净利润增长且估值低于行业平均，可能具备中长期投资价值，但需结合行业前景与竞争力评估。\n\n风险管理与心态\n\n1. 仓位与止损\n- 原则：控制单只股票仓位占比，设置合理止损位以防重大损失。\n- 例子：将单只股票仓位控制在总资产的5%-10%，设置止损位为买入价下方5%-15%（根据策略调整）。\n\n2. 分散投资与资产配置\n- 原则：不要把所有资金投入单一股票或单一行业，适当配置债券、现金、指数类产品降低风险。\n- 例子：将资金分为股票60%、债券30%、现金10%，或在股票部分配置多个行业的龙头和成长股。\n\n3. 投资心态与纪律\n- 原则：遵循既定交易计划，不因短期波动盲目跟风或恐慌抛售。\n- 例子：设定每月复盘时间，检视策略有效性并记录交易日志，避免情绪化操作。\n\n实例讲解\n\n1. 选股示例（从基本面筛选到技术面确认）\n- 步骤：\n  1) 基本面筛选：选择净利润增长、ROE稳定/上升、行业景气度良好的公司；\n  2) 估值筛查：PE或PB在合理范围或低于历史区间；\n  3) 技术面确认：观察均线结构、成交量是否放大、MACD是否转强；\n  4) 风险评估：检查是否存在重大诉讼、债务风险或政策风险。\n- 例子：某科技公司符合业绩增长且行业景气，估值合理，股价突破整理区并放量，符合入场条件。\n\n2. 买入、持有与卖出流程示例\n- 流程：\n  1) 事先设定买入理由与目标价位；\n  2) 买入时分批建仓以降低成本波动风险；\n  3) 持有期间定期复盘，关注业绩、行业与宏观变化；\n  4) 达到止盈/止损条件或基本面恶化时果断执行卖出。\n- 例子：目标价位到达后获利了结一部分仓位并上移止损以保护剩余收益。\n\n总结\n\n- 入门关键在于打好基础概念，理解交易规则与常用工具，再逐步实践与复盘。\n- 风险管理与心态比技术手段更重要：控制仓位、严格止损并保持纪律性。\n- 建议从模拟账户或小资金开始，记录每次交易并定期总结经验，逐步形成适合自己的交易体系。\n\n附录（建议的学习资源）\n- 书籍：<价值投资类与技术分析入门书籍，如《聪明的投资者》《日本蜡烛图教程》等>\n- 实践：使用券商模拟交易平台练习下单流程与简单策略验证。\n\n（文档旨在为初学者提供结构化的入门指南，便于在本地目录中保存与扩展。）\n"}
+   Observation：{
+  "tool_name": "write_file",
+  "success": true,
+  "message": "成功写入文件：炒股入门_初学者指南.md",
+  "payload": {
+    "path": "/Users/xxx/Documents/AI/agent/07-项目实战/agent-study-builder/generated/炒股入门/炒股入门_初学者指南.md",
+    "length": 2259
+  }
+}
+4. Thought：我已检查目标目录为空并确认目标文件不存在，然后创建并写入完整教学文档“炒股入门_初学者指南.md”。现在确认已成功写入文件并完成任务。
+   Action：finish
+   Action Input：{}
+   Observation：LLM 认为任务已经完成，不再调用工具。
+
+[最终结果]
+已在目录 /Users/xxx/Documents/AI/agent/07-项目实战/agent-study-builder/generated/炒股入门
+中创建文件：炒股入门_初学者指南.md，内容包含主标题、目录、学习目标、概念与例子、总结与附录，供初学者学习使用。
+
 """
 
 from __future__ import annotations
@@ -299,11 +346,48 @@ class OpenAICompatibleClient:
 
         try:
             return json.loads(text_output)
-        except Exception as exc:
-            self._log_exception(exc)
+        except json.JSONDecodeError:
+            # LLM 可能返回了 JSON 后面跟额外文本，尝试提取第一个完整 JSON 对象
+            result = self._extract_first_json_object(text_output)
+            if result is not None:
+                return result
             self._log("LLM 返回的文本无法解析成 JSON：")
             self._log(text_output)
             return None
+
+    @staticmethod
+    def _extract_first_json_object(text: str) -> Optional[Dict[str, Any]]:
+        """从文本中提取第一个完整的 JSON 对象（花括号配对）。"""
+        start = text.find("{")
+        if start == -1:
+            return None
+        depth = 0
+        in_string = False
+        escape_next = False
+        for i in range(start, len(text)):
+            ch = text[i]
+            if escape_next:
+                escape_next = False
+                continue
+            if ch == "\\":
+                if in_string:
+                    escape_next = True
+                continue
+            if ch == '"':
+                in_string = not in_string
+                continue
+            if in_string:
+                continue
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(text[start : i + 1])
+                    except json.JSONDecodeError:
+                        return None
+        return None
 
     @staticmethod
     def _strip_code_fence(text: str) -> str:

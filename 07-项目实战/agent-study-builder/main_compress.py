@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 """
-一个使用 ReAct 模式的学习资料整理 Agent。
-
 核心特点：
-1. LLM 每一轮先思考当前任务状态
-2. LLM 自主决定是否调用工具、调用什么工具
-3. Agent 负责执行工具，并把结果反馈给 LLM
-4. 循环直到 LLM 主动宣布任务完成
-
-这比“LLM 只生成一次答案”更接近真正的 Agent。
+进行了上下文压缩，常见的办法如下：
+    1. 总结式压缩 (Summarization / Compaction)
+        这是最常见的做法。当对话达到一定长度或 Token 阈值时，触发一个“总结任务”。
+    2. 剪裁与过滤 (Pruning / Trimming)
+        这是一种比较“暴力”但极其有效的硬手段。
+        做法：
+        - 滑动窗口：只保留最近的 K 条消息（FIFO 队列）。
+        - 选择性删除：比如只删除中间的 Tool Output（工具返回的原始数据通常非常大，但参考价值随时间降低），保留 User 和 Assistant 的对话。
+        优点：不消耗额外的总结 Token，逻辑简单。
+    3. RAG 增强型内存 (Selective Context / Memory Retrieval)
+        不再把所有历史都塞进上下文，而是把历史存入向量数据库。
+    4. 语义压缩 (Semantic Compression)
+        这是比较进阶的技术方案，比如 LLMLingua。
+        做法：利用一个小模型（如 Llama-3-8B）预先扫描长文本，删掉那些对语义贡献不大的词（助词、冗余描述），在不损失核心信息的前提下，将 Token 数压缩 2-5 倍。
+        特点：压缩后的文本人类看起来可能断断续续，但 LLM 依然能读懂。
 """
 
 from __future__ import annotations

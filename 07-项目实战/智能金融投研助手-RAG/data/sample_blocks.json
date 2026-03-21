@@ -1,0 +1,56 @@
+[
+  {
+    "page_no": 1,
+    "block_type": "header",
+    "text": "某公司2024年度报告",
+    "section_path": []
+  },
+  {
+    "page_no": 1,
+    "block_type": "title",
+    "text": "管理层讨论与分析",
+    "section_path": ["管理层讨论与分析"]
+  },
+  {
+    "page_no": 1,
+    "block_type": "paragraph",
+    "text": "2024年公司实现营业收入同比增长12.5%，主要受核心产品销量提升带动。",
+    "section_path": ["管理层讨论与分析"]
+  },
+  {
+    "page_no": 1,
+    "block_type": "paragraph",
+    "text": "国内市场收入增长明显快于海外市场，反映出本土客户需求恢复。",
+    "section_path": ["管理层讨论与分析"]
+  },
+  {
+    "page_no": 2,
+    "block_type": "title",
+    "text": "盈利能力分析",
+    "section_path": ["管理层讨论与分析", "盈利能力分析"]
+  },
+  {
+    "page_no": 2,
+    "block_type": "paragraph",
+    "text": "报告期内公司毛利率由35.2%下降至33.1%，同比下降2.1个百分点。",
+    "section_path": ["管理层讨论与分析", "盈利能力分析"]
+  },
+  {
+    "page_no": 2,
+    "block_type": "paragraph",
+    "text": "毛利率下降主要受原材料采购价格上涨、低毛利产品占比提升以及海外业务促销影响。",
+    "section_path": ["管理层讨论与分析", "盈利能力分析"]
+  },
+  {
+    "page_no": 2,
+    "block_type": "table",
+    "text": "项目 | 2023 | 2024\n毛利率 | 35.2% | 33.1%\n净利率 | 18.4% | 17.2%",
+    "section_path": ["管理层讨论与分析", "盈利能力分析"]
+  },
+  {
+    "page_no": 2,
+    "block_type": "footer",
+    "text": "第 2 页",
+    "section_path": []
+  }
+]
