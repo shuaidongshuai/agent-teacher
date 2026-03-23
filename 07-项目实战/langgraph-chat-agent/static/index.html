@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LangGraph Chat Agent Demo</title>
+    <style>
+      :root {
+        --bg: #f6f1e8;
+        --panel: rgba(255, 252, 247, 0.92);
+        --ink: #202124;
+        --muted: #6d6a63;
+        --brand: #0f766e;
+        --brand-soft: #d7f3ee;
+        --line: rgba(32, 33, 36, 0.08);
+        --shadow: 0 24px 60px rgba(30, 41, 59, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "SF Pro SC", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(180, 83, 9, 0.12), transparent 28%),
+          linear-gradient(180deg, #f8f4ec 0%, #f2ebe0 100%);
+        min-height: 100vh;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 32px));
+        margin: 24px auto;
+        display: grid;
+        grid-template-columns: 1.6fr 0.9fr;
+        gap: 20px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+
+      .chat-panel {
+        display: flex;
+        flex-direction: column;
+        min-height: 80vh;
+        overflow: hidden;
+      }
+
+      .hero {
+        padding: 28px 28px 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 42px);
+        line-height: 1.05;
+      }
+
+      .hero p {
+        margin: 12px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .chip {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--brand-soft);
+        color: var(--brand);
+        font-size: 14px;
+      }
+
+      .messages {
+        flex: 1;
+        padding: 22px 24px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .msg {
+        max-width: 82%;
+        padding: 14px 16px;
+        border-radius: 18px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        animation: fadeIn 0.28s ease;
+      }
+
+      .msg.user {
+        align-self: flex-end;
+        background: #1f2937;
+        color: #fff;
+        border-bottom-right-radius: 6px;
+      }
+
+      .msg.assistant {
+        align-self: flex-start;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-bottom-left-radius: 6px;
+      }
+
+      .msg.tool {
+        align-self: center;
+        max-width: 90%;
+        background: #eef7f5;
+        color: #11443f;
+        border: 1px dashed rgba(15, 118, 110, 0.24);
+      }
+
+      .composer {
+        border-top: 1px solid var(--line);
+        padding: 18px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 74px;
+        resize: vertical;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px 16px;
+        font: inherit;
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      button {
+        border: 0;
+        border-radius: 16px;
+        padding: 0 18px;
+        min-width: 112px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(135deg, #0f766e, #14532d);
+        color: #fff;
+      }
+
+      .side {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+      }
+
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 16px;
+      }
+
+      .muted {
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .memory-line {
+        margin: 8px 0;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: #fcfaf6;
+        border: 1px solid var(--line);
+        line-height: 1.6;
+      }
+
+      .examples button {
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        min-width: 0;
+        background: #fff;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        text-align: left;
+        padding: 12px 14px;
+      }
+
+      .status {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 960px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .chat-panel {
+          min-height: 72vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel chat-panel">
+        <header class="hero">
+          <h1>LangGraph 自定义聊天 Agent</h1>
+          <p>
+            这个网页演示的是一个带记忆、工具、调度能力的自定义 Agent。
+            你可以让它和你聊天、记住偏好、查天气、搜网络信息、管理本地日程。
+          </p>
+          <div class="chips">
+            <span class="chip">LangGraph 图调度</span>
+            <span class="chip">长期记忆</span>
+            <span class="chip">天气工具</span>
+            <span class="chip">网络信息</span>
+            <span class="chip">本地日历</span>
+          </div>
+        </header>
+
+        <div class="messages" id="messages"></div>
+
+        <form class="composer" id="composer">
+          <textarea
+            id="input"
+            placeholder="试试：我叫小陈，请记住我在上海工作。"
+          ></textarea>
+          <button type="submit" id="sendBtn">发送</button>
+        </form>
+      </section>
+
+      <aside class="panel side">
+        <div class="card">
+          <h2>当前会话</h2>
+          <div class="muted" id="threadId">Thread ID: -</div>
+          <div class="status" id="mode">模式：检测中</div>
+          <button type="button" id="newChatBtn" style="margin-top: 12px; min-width: 0; padding: 10px 14px; font-size: 13px;">新建会话</button>
+        </div>
+
+        <div class="card">
+          <h2>Agent 记忆</h2>
+          <div id="memoryBox" class="muted">还没有记忆内容。</div>
+        </div>
+
+        <div class="card">
+          <h2>快捷示例</h2>
+          <div class="examples">
+            <button type="button" data-prompt="我叫小陈，请记住我在上海工作。">记住用户信息</button>
+            <button type="button" data-prompt="帮我查一下上海天气。">查天气</button>
+            <button type="button" data-prompt="帮我搜索一下 LangGraph 是什么。">查网络信息</button>
+            <button type="button" data-prompt="帮我创建 产品评审会议 从2026-03-25 14:00到2026-03-25 15:00">创建日程</button>
+            <button type="button" data-prompt="帮我看看 2026-03-25 的日程">查看日程</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script>
+      const messagesEl = document.getElementById("messages");
+      const composer = document.getElementById("composer");
+      const inputEl = document.getElementById("input");
+      const sendBtn = document.getElementById("sendBtn");
+      const memoryBox = document.getElementById("memoryBox");
+      const threadIdEl = document.getElementById("threadId");
+      const modeEl = document.getElementById("mode");
+      const newChatBtn = document.getElementById("newChatBtn");
+      const storageKey = "langgraph-chat-agent-thread";
+      let threadId = localStorage.getItem(storageKey) || "";
+
+      function addMessage(role, content) {
+        const div = document.createElement("div");
+        div.className = `msg ${role}`;
+        div.textContent = content;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function renderMemory(memory) {
+        if (!memory) {
+          memoryBox.textContent = "还没有记忆内容。";
+          return;
+        }
+
+        const facts = memory.facts || {};
+        const notes = memory.notes || [];
+        const summary = memory.summary || "";
+        const lines = [];
+
+        if (Object.keys(facts).length > 0) {
+          lines.push(`<div class="memory-line"><strong>用户画像</strong><br>${Object.entries(facts)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("<br>")}</div>`);
+        }
+        if (notes.length > 0) {
+          lines.push(`<div class="memory-line"><strong>记住的事项</strong><br>${notes.join("<br>")}</div>`);
+        }
+        if (summary) {
+          lines.push(`<div class="memory-line"><strong>最近摘要</strong><br>${summary}</div>`);
+        }
+
+        memoryBox.innerHTML = lines.join("") || "还没有记忆内容。";
+      }
+
+      async function loadHistory() {
+        if (!threadId) {
+          addMessage("assistant", "欢迎，你可以直接和我聊天。我会尝试记住你说过的话，并在需要时调用天气、搜索和日历工具。");
+          return;
+        }
+
+        threadIdEl.textContent = `Thread ID: ${threadId}`;
+        const response = await fetch(`/api/history/${threadId}`);
+        if (!response.ok) {
+          addMessage("assistant", "读取历史会话失败，你可以重新开始一个新会话。");
+          return;
+        }
+        const history = await response.json();
+        (history.session_history || []).forEach((item) => {
+          addMessage(item.role === "user" ? "user" : "assistant", item.content);
+        });
+        renderMemory(history);
+      }
+
+      async function sendMessage(message) {
+        addMessage("user", message);
+        sendBtn.disabled = true;
+        modeEl.textContent = "模式：处理中";
+
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ thread_id: threadId, message }),
+        });
+        const payload = await response.json();
+        threadId = payload.thread_id;
+        localStorage.setItem(storageKey, threadId);
+        threadIdEl.textContent = `Thread ID: ${threadId}`;
+        modeEl.textContent = payload.reply.includes("本地教学模式")
+          ? "模式：本地教学模式"
+          : "模式：LLM + LangGraph";
+
+        const visibleMessages = payload.turn_messages || [];
+        const toolMessages = visibleMessages.filter((item) => item.role === "tool");
+        toolMessages.forEach((item) => addMessage("tool", item.content));
+        addMessage("assistant", payload.reply);
+        renderMemory(payload.memory);
+        modeEl.textContent = payload.mode === "fallback"
+          ? "模式：本地教学模式"
+          : "模式：LLM + LangGraph";
+        sendBtn.disabled = false;
+      }
+
+      composer.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const message = inputEl.value.trim();
+        if (!message) return;
+        inputEl.value = "";
+        await sendMessage(message);
+      });
+
+      // 按回车发送消息（Shift+Enter 换行）
+      inputEl.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          const message = inputEl.value.trim();
+          if (message) {
+            inputEl.value = "";
+            sendMessage(message);
+          }
+        }
+      });
+
+      // 新建会话按钮
+      newChatBtn.addEventListener("click", () => {
+        localStorage.removeItem(storageKey);
+        threadId = "";
+        threadIdEl.textContent = "Thread ID: -";
+        messagesEl.innerHTML = "";
+        modeEl.textContent = "模式：检测中";
+        addMessage("assistant", "已创建新会话，欢迎开始新的对话！");
+      });
+
+      document.querySelectorAll("[data-prompt]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const message = button.getAttribute("data-prompt");
+          inputEl.value = message;
+          inputEl.focus();
+        });
+      });
+
+      loadHistory();
+    </script>
+  </body>
+</html>
