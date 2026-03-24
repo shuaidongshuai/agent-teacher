@@ -13,7 +13,7 @@ __pycache__/
 # Virtual environments
 .venv/
 venv/
-env/
+env/˚
 
 # IDEs
 .idea/
@@ -26,3 +26,4 @@ node_modules/
 *.log
 .tmp/
 tmp/
+/output/
