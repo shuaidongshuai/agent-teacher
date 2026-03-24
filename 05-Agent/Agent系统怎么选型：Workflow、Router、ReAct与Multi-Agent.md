@@ -232,7 +232,7 @@ Agent 选型最重要的原则，不是“做得最像智能体”，而是：
 
 下一步建议继续阅读：
 
-- [Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
-- [Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent观测与评测：如何定位问题并持续优化.md)
+- [Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
+- [Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent观测与评测：如何定位问题并持续优化.md)
 
 这样你会把“怎么选”进一步连到“怎么让它稳定”和“怎么持续优化”。

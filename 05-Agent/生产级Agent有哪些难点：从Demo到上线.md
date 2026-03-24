@@ -236,7 +236,7 @@ Agent 的失败经常是链式传递，而不是单点崩掉。
 
 下一步建议继续阅读：
 
-- [Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md)
-- [Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
+- [Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md)
+- [Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
 
 这样可以把“为什么难”进一步连到“应该怎么选”和“应该怎么稳”。

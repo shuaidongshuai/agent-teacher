@@ -149,4 +149,4 @@ Prompt 工程的价值，不在于“骗模型”，而在于：
 
 建议你先从 [Prompt基础模式](/Users/chenmingdong01/Documents/AI/agent/02-Prompt工程/Prompt基础模式.md) 开始，再一路读到 [结构化输出](/Users/chenmingdong01/Documents/AI/agent/02-Prompt工程/结构化输出.md) 和 [Prompt调试记录](/Users/chenmingdong01/Documents/AI/agent/02-Prompt工程/Prompt调试记录.md)。
 
-读完后，下一步建议进入 [工具调用与函数调用](/Users/chenmingdong01/Documents/AI/agent/05-工具调用与函数调用/README.md)，因为很多真实应用已经不只是“把 Prompt 写好”，而是要让模型稳定地产生可执行动作。
+读完后，下一步建议进入 [工具调用与函数调用](/Users/chenmingdong01/Documents/AI/agent/04-工具调用与函数调用/README.md)，因为很多真实应用已经不只是“把 Prompt 写好”，而是要让模型稳定地产生可执行动作。

@@ -36,7 +36,7 @@
 - `02-Prompt工程` 主要解决“怎样把任务说清楚”
 - `03-RAG` 主要解决“怎样把外部知识拿进来”
 
-那么 `04-Agent` 解决的就是：
+那么 `05-Agent` 解决的就是：
 
 **当一个任务不能一步完成，而是需要多步决策、工具调用、状态推进和异常处理时，系统应该怎样设计。**
 
@@ -61,11 +61,11 @@
 
 推荐按下面顺序学习：
 
-1. [Agent深入学习讲义.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent深入学习讲义.md)
-2. [生产级Agent有哪些难点：从Demo到上线.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/生产级Agent有哪些难点：从Demo到上线.md)
-3. [Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md)
-4. [Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
-5. [Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent观测与评测：如何定位问题并持续优化.md)
+1. [Agent深入学习讲义.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent深入学习讲义.md)
+2. [生产级Agent有哪些难点：从Demo到上线.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/生产级Agent有哪些难点：从Demo到上线.md)
+3. [Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md)
+4. [Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
+5. [Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent观测与评测：如何定位问题并持续优化.md)
 
 这个顺序对应的逻辑是：
 
@@ -81,31 +81,31 @@
 
 ### 3.1 Agent 总览
 
-[Agent深入学习讲义.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent深入学习讲义.md)
+[Agent深入学习讲义.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent深入学习讲义.md)
 
 适合先建立整体认知，理解 Agent 的闭环、架构、边界和常见失败模式。
 
 ### 3.2 生产难点
 
-[生产级Agent有哪些难点：从Demo到上线.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/生产级Agent有哪些难点：从Demo到上线.md)
+[生产级Agent有哪些难点：从Demo到上线.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/生产级Agent有哪些难点：从Demo到上线.md)
 
 这篇重点回答一个现实问题：为什么 demo 里能跑通的 Agent，一到真实业务就开始不稳定。
 
 ### 3.3 架构选型
 
-[Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md)
+[Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md)
 
 这篇重点建立架构判断框架，避免一上来就堆复杂的多 Agent。
 
 ### 3.4 稳定性设计
 
-[Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
+[Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
 
 这篇更偏工程落地，适合理解“能跑”和“可上线”之间差的是什么。
 
 ### 3.5 观测与排障
 
-[Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/04-Agent/Agent观测与评测：如何定位问题并持续优化.md)
+[Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/Agent观测与评测：如何定位问题并持续优化.md)
 
 这篇重点是把线上问题从“玄学”变成“可定位的问题”。
 
@@ -166,4 +166,4 @@ flowchart TD
 - 如果需要 Agent，失败后怎么回退？
 - 如果用户问“为什么错了”，系统能不能解释执行过程？
 
-建议你读完这一章后，再结合 [05-工具调用与函数调用](/Users/chenmingdong01/Documents/AI/agent/05-工具调用与函数调用/README.md) 和 [07-项目实战](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/README.md) 一起看，把 Agent 架构和工具实现、项目落地串起来。
+建议你读完这一章后，再结合 [04-工具调用与函数调用](/Users/chenmingdong01/Documents/AI/agent/04-工具调用与函数调用/README.md) 和 [07-项目实战](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/README.md) 一起看，把 Agent 架构和工具实现、项目落地串起来。
