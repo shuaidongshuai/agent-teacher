@@ -237,7 +237,7 @@ flowchart TD
 项目目录如下：
 
 ```text
-07-项目实战/langgraph-chat-agent/
+07-项目实战/agent-chat-langgraph/
 ├── README.md
 ├── app.py
 ├── requirements.txt
@@ -261,7 +261,7 @@ flowchart TD
 在项目目录下执行：
 
 ```bash
-cd 07-项目实战/langgraph-chat-agent
+cd 07-项目实战/agent-chat-langgraph
 pip install -r requirements.txt
 python3 app.py
 ```

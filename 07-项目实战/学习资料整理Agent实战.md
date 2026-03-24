@@ -147,7 +147,7 @@ Agent 执行工具，把结果整理成结构化 Observation。
 ## 6. 项目目录结构
 
 ```text
-07-项目实战/agent-study-builder/
+07-项目实战/agent-study-react/
 ├── README.md
 └── main.py
 ```
@@ -168,7 +168,7 @@ export OPENAI_MODEL=gpt-4o
 export OPENAI_API_STYLE=chat_completions
 export OPENAI_SSL_VERIFY=false
 
-python3 07-项目实战/agent-study-builder/main.py "RAG 入门" --audience "初学者"
+python3 07-项目实战/agent-study-react/main.py "RAG 入门" --audience "初学者"
 ```
 
 ### 不配置 Key 时

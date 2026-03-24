@@ -166,4 +166,4 @@ flowchart TD
 - 如果需要 Agent，失败后怎么回退？
 - 如果用户问“为什么错了”，系统能不能解释执行过程？
 
-建议你读完这一章后，再结合 [05-工具调用与函数调用](/Users/chenmingdong01/Documents/AI/agent/05-工具调用与函数调用/README.md) 和 [07-项目实战](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/langgraph-chat-agent/README.md) 一起看，把 Agent 架构和工具实现、项目落地串起来。
+建议你读完这一章后，再结合 [05-工具调用与函数调用](/Users/chenmingdong01/Documents/AI/agent/05-工具调用与函数调用/README.md) 和 [07-项目实战](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/README.md) 一起看，把 Agent 架构和工具实现、项目落地串起来。

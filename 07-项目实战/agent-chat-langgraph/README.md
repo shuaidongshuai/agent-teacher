@@ -159,7 +159,7 @@ export OPENAI_MODEL=gpt-4o-mini
 ## 目录结构
 
 ```text
-langgraph-chat-agent/
+agent-chat-langgraph/
 ├── README.md
 ├── app.py
 ├── requirements.txt
@@ -242,30 +242,30 @@ flowchart LR
 
 建议按下面这个顺序读：
 
-1. [app.py#L136](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/langgraph-chat-agent/app.py#L136)
+1. [app.py#L136](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/app.py#L136)
 
 这里是 `PersistentMemoryStore`，负责把用户事实、备注、摘要保存到本地 JSON 文件里，它只管“长期记忆”。
 
-1. [app.py#L223](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/langgraph-chat-agent/app.py#L223)
+1. [app.py#L223](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/app.py#L223)
 
 这里是 `SessionHistoryStore`，负责保存完整会话日志。想理解“长期记忆”和“对话原文归档”是怎么分开的，可以接着看这里。
 
-1. [app.py#L359](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/langgraph-chat-agent/app.py#L359)
+1. [app.py#L359](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/app.py#L359)
 
 这里是 `_register_default_tools()`，能看到默认工具是怎么定义和注册的，包括网络搜索、天气查询、添加日程、查看日程。想理解“工具怎么扩展”，重点看这里。
 
-1. [app.py#L513](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/langgraph-chat-agent/app.py#L513)
+1. [app.py#L513](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/app.py#L513)
 
 这里是 `_build_graph()`，是整个 LangGraph 工作流的核心。你可以直接看到 `hydrate_memory -> assistant -> tools/persist_memory` 这条主流程是怎么被拼起来的。
 
-1. [app.py#L554](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/langgraph-chat-agent/app.py#L554)
+1. [app.py#L554](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/app.py#L554)
 
 这里是 `assistant_node()`，负责真正调用 LLM，并把用户画像、记忆摘要和消息历史一起交给模型。想理解“模型如何在上下文里利用记忆和工具”，这里最关键。
 
-1. [app.py#L627](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/langgraph-chat-agent/app.py#L627)
+1. [app.py#L627](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/app.py#L627)
 
 这里是 `persist_memory()`，负责在回答完成后分别写入会话日志和长期记忆。它体现的是“回答结束后怎么收尾，以及不同类型记忆怎么分层落盘”。
 
-1. [app.py#L793](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/langgraph-chat-agent/app.py#L793)
+1. [app.py#L793](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/app.py#L793)
 
 这里是 `invoke()`，相当于整个 Agent 的统一入口。前端请求最终会走到这里，再由这里触发整张图的执行。
