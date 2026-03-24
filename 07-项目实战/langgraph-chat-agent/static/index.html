@@ -6,283 +6,691 @@
     <title>LangGraph Chat Agent Demo</title>
     <style>
       :root {
-        --bg: #f6f1e8;
-        --panel: rgba(255, 252, 247, 0.92);
-        --ink: #202124;
-        --muted: #6d6a63;
-        --brand: #0f766e;
-        --brand-soft: #d7f3ee;
-        --line: rgba(32, 33, 36, 0.08);
-        --shadow: 0 24px 60px rgba(30, 41, 59, 0.12);
+        --bg: #f5f5f7;
+        --bg-soft: rgba(255, 255, 255, 0.72);
+        --surface: rgba(255, 255, 255, 0.82);
+        --surface-strong: rgba(255, 255, 255, 0.92);
+        --ink: #111111;
+        --muted: #6e6e73;
+        --line: rgba(17, 17, 17, 0.08);
+        --line-strong: rgba(17, 17, 17, 0.12);
+        --shadow-lg: 0 32px 80px rgba(15, 15, 15, 0.10);
+        --shadow-md: 0 18px 40px rgba(15, 15, 15, 0.08);
+        --shadow-sm: 0 10px 24px rgba(15, 15, 15, 0.05);
+        --radius-xl: 32px;
+        --radius-lg: 28px;
+        --radius-md: 24px;
+        --radius-sm: 20px;
       }
 
       * {
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
-        font-family: "SF Pro SC", "PingFang SC", "Noto Sans SC", sans-serif;
-        color: var(--ink);
-        background:
-          radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 28%),
-          radial-gradient(circle at bottom right, rgba(180, 83, 9, 0.12), transparent 28%),
-          linear-gradient(180deg, #f8f4ec 0%, #f2ebe0 100%);
         min-height: 100vh;
+        font-family: "SF Pro Display", "SF Pro SC", "PingFang SC", "Helvetica Neue", sans-serif;
+        color: var(--ink);
+        letter-spacing: -0.02em;
+        background:
+          radial-gradient(circle at top center, rgba(255, 255, 255, 0.95), transparent 26%),
+          radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.035), transparent 24%),
+          linear-gradient(180deg, #fbfbfd 0%, #f3f3f5 46%, #efeff1 100%);
       }
 
-      .shell {
-        width: min(1180px, calc(100% - 32px));
-        margin: 24px auto;
-        display: grid;
-        grid-template-columns: 1.6fr 0.9fr;
-        gap: 20px;
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.85), transparent 18%),
+          radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.55), transparent 16%),
+          radial-gradient(circle at 70% 80%, rgba(0, 0, 0, 0.03), transparent 24%);
       }
 
-      .panel {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(10px);
+      button,
+      textarea {
+        font: inherit;
       }
 
-      .chat-panel {
+      .frame {
+        width: min(1380px, calc(100% - 32px));
+        margin: 20px auto 28px;
+        min-height: calc(100vh - 40px);
+      }
+
+      .topbar {
+        position: sticky;
+        top: 16px;
+        z-index: 10;
         display: flex;
-        flex-direction: column;
-        min-height: 80vh;
-        overflow: hidden;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 12px 16px;
+        margin-bottom: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.58);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.62);
+        box-shadow: var(--shadow-sm);
+        backdrop-filter: blur(20px) saturate(160%);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(230, 230, 232, 0.9));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 16px rgba(0, 0, 0, 0.08);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .brand-copy strong {
+        display: block;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .brand-copy span {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0;
+      }
+
+      .topbar-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .glass-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        border: 1px solid rgba(17, 17, 17, 0.06);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.64);
+        color: var(--muted);
+        font-size: 13px;
+        backdrop-filter: blur(18px);
       }
 
       .hero {
-        padding: 28px 28px 18px;
-        border-bottom: 1px solid var(--line);
+        padding: 10px 8px 8px;
+        text-align: center;
+      }
+
+      .hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(17, 17, 17, 0.06);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--muted);
+        font-size: 12px;
+        backdrop-filter: blur(16px);
       }
 
       .hero h1 {
-        margin: 0;
-        font-size: clamp(28px, 4vw, 42px);
-        line-height: 1.05;
+        max-width: 980px;
+        margin: 0 auto;
+        font-size: clamp(30px, 5vw, 56px);
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: -0.05em;
       }
 
       .hero p {
-        margin: 12px 0 0;
+        max-width: 700px;
+        margin: 10px auto 0;
         color: var(--muted);
-        line-height: 1.7;
+        font-size: clamp(14px, 1.5vw, 17px);
+        line-height: 1.55;
+        letter-spacing: -0.02em;
       }
 
-      .chips {
+      .hero-chips {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 16px;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 12px;
       }
 
-      .chip {
-        padding: 8px 12px;
+      .hero-chip {
+        padding: 9px 13px;
+        border: 1px solid rgba(17, 17, 17, 0.06);
         border-radius: 999px;
-        background: var(--brand-soft);
-        color: var(--brand);
-        font-size: 14px;
+        background: rgba(255, 255, 255, 0.78);
+        box-shadow: var(--shadow-sm);
+        color: #1d1d1f;
+        font-size: 12px;
+        backdrop-filter: blur(14px);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.92fr);
+        gap: 22px;
+        align-items: stretch;
+      }
+
+      .panel {
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: var(--radius-xl);
+        background: var(--surface);
+        box-shadow: var(--shadow-lg);
+        backdrop-filter: blur(24px) saturate(140%);
+      }
+
+      .chat-shell {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        height: min(920px, calc(100vh - 126px));
+        max-height: calc(100vh - 126px);
+        overflow: hidden;
+      }
+
+      .chat-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 24px 26px 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .chat-head h2 {
+        margin: 0;
+        font-size: 26px;
+        line-height: 1.1;
+        letter-spacing: -0.04em;
+      }
+
+      .chat-head p {
+        margin: 8px 0 0;
+        max-width: 640px;
+        color: var(--muted);
+        line-height: 1.58;
+        font-size: 15px;
+      }
+
+      .chat-head-meta {
+        text-align: right;
+        min-width: 180px;
+      }
+
+      .chat-head-meta strong {
+        display: block;
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .chat-head-meta span {
+        display: block;
+        margin-top: 8px;
+        font-size: 16px;
       }
 
       .messages {
-        flex: 1;
-        padding: 22px 24px;
+        min-height: 0;
+        padding: 22px;
         overflow: auto;
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        gap: 16px;
       }
 
       .msg {
-        max-width: 82%;
-        padding: 14px 16px;
-        border-radius: 18px;
-        line-height: 1.7;
+        max-width: min(78%, 720px);
+        padding: 18px 20px;
+        border-radius: 26px;
+        line-height: 1.72;
+        letter-spacing: -0.015em;
         white-space: pre-wrap;
-        animation: fadeIn 0.28s ease;
+        box-shadow: var(--shadow-sm);
+        animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1);
       }
 
       .msg.user {
         align-self: flex-end;
-        background: #1f2937;
-        color: #fff;
-        border-bottom-right-radius: 6px;
+        border-bottom-right-radius: 8px;
+        background: linear-gradient(180deg, #191919, #111111);
+        color: #ffffff;
       }
 
       .msg.assistant {
         align-self: flex-start;
-        background: #fff;
-        border: 1px solid var(--line);
-        border-bottom-left-radius: 6px;
+        border-bottom-left-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(17, 17, 17, 0.05);
+        color: #111111;
       }
 
       .msg.tool {
         align-self: center;
-        max-width: 90%;
-        background: #eef7f5;
-        color: #11443f;
-        border: 1px dashed rgba(15, 118, 110, 0.24);
+        max-width: min(88%, 760px);
+        border-radius: 22px;
+        background: rgba(245, 245, 247, 0.96);
+        border: 1px solid rgba(17, 17, 17, 0.06);
+        color: #303036;
       }
 
       .composer {
+        padding: 10px 12px 12px;
         border-top: 1px solid var(--line);
-        padding: 18px;
+      }
+
+      .composer-shell {
         display: grid;
         grid-template-columns: 1fr auto;
-        gap: 12px;
+        gap: 8px;
+        padding: 6px;
+        border: 1px solid rgba(17, 17, 17, 0.06);
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
       }
 
       textarea {
         width: 100%;
-        min-height: 74px;
-        resize: vertical;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 14px 16px;
-        font: inherit;
-        background: rgba(255, 255, 255, 0.92);
+        min-height: 46px;
+        max-height: 92px;
+        padding: 8px 10px;
+        resize: none;
+        border: 0;
+        border-radius: 20px;
+        background: transparent;
+        color: var(--ink);
+        line-height: 1.5;
+        outline: none;
       }
 
-      button {
+      textarea::placeholder {
+        color: #8d8d93;
+      }
+
+      .primary-btn,
+      .ghost-btn,
+      .examples button {
+        appearance: none;
         border: 0;
-        border-radius: 16px;
-        padding: 0 18px;
-        min-width: 112px;
-        font: inherit;
-        font-weight: 600;
+        border-radius: 999px;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease,
+          background 0.25s ease,
+          color 0.25s ease,
+          border-color 0.25s ease;
         cursor: pointer;
-        background: linear-gradient(135deg, #0f766e, #14532d);
-        color: #fff;
+      }
+
+      .primary-btn {
+        min-width: 132px;
+        min-height: 46px;
+        padding: 0 18px;
+        background: linear-gradient(180deg, #181818, #0d0d0d);
+        color: #ffffff;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .primary-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
+      }
+
+      .ghost-btn {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.76);
+        color: var(--ink);
+        border: 1px solid rgba(17, 17, 17, 0.07);
+      }
+
+      .ghost-btn:hover,
+      .examples button:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: var(--shadow-sm);
       }
 
       .side {
-        padding: 22px;
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        gap: 22px;
       }
 
       .card {
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        padding: 16px;
+        padding: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.66);
+        border-radius: var(--radius-lg);
+        background: var(--bg-soft);
+        box-shadow: var(--shadow-md);
+        backdrop-filter: blur(22px);
+        transition:
+          transform 0.28s ease,
+          box-shadow 0.28s ease,
+          background 0.28s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 24px 48px rgba(15, 15, 15, 0.12);
+        background: var(--surface-strong);
       }
 
       .card h2 {
-        margin: 0 0 12px;
-        font-size: 16px;
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: -0.03em;
       }
 
-      .muted {
+      .card p,
+      .muted,
+      .status {
         color: var(--muted);
         line-height: 1.7;
+        letter-spacing: -0.01em;
+      }
+
+      .stack {
+        display: grid;
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      .info-row {
+        padding: 14px 16px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.74);
+        border: 1px solid rgba(17, 17, 17, 0.06);
+      }
+
+      .info-row strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #8d8d93;
+      }
+
+      .memory-box {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
       }
 
       .memory-line {
-        margin: 8px 0;
-        padding: 10px 12px;
-        border-radius: 14px;
-        background: #fcfaf6;
-        border: 1px solid var(--line);
-        line-height: 1.6;
+        padding: 14px 16px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.74);
+        border: 1px solid rgba(17, 17, 17, 0.05);
+        line-height: 1.68;
+      }
+
+      .memory-line strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #1d1d1f;
+      }
+
+      .examples {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
       }
 
       .examples button {
-        display: block;
         width: 100%;
-        margin-top: 10px;
-        min-width: 0;
-        background: #fff;
-        color: var(--ink);
-        border: 1px solid var(--line);
+        padding: 16px 18px;
         text-align: left;
-        padding: 12px 14px;
+        border: 1px solid rgba(17, 17, 17, 0.06);
+        background: rgba(255, 255, 255, 0.74);
+        color: var(--ink);
       }
 
-      .status {
-        font-size: 13px;
+      .examples button span {
+        display: block;
+        font-size: 12px;
         color: var(--muted);
+        margin-top: 6px;
       }
 
-      @keyframes fadeIn {
+      .assistant-welcome {
+        padding: 24px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 248, 250, 0.86));
+        border: 1px solid rgba(17, 17, 17, 0.05);
+      }
+
+      .assistant-welcome strong {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      @keyframes fadeUp {
         from {
           opacity: 0;
-          transform: translateY(8px);
+          transform: translateY(18px) scale(0.985);
         }
         to {
           opacity: 1;
-          transform: translateY(0);
+          transform: translateY(0) scale(1);
         }
       }
 
-      @media (max-width: 960px) {
-        .shell {
+      @media (max-width: 1100px) {
+        .grid {
           grid-template-columns: 1fr;
         }
 
-        .chat-panel {
-          min-height: 72vh;
+        .side {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-rows: none;
+        }
+
+        .side .card:last-child {
+          grid-column: 1 / -1;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .frame {
+          width: min(100%, calc(100% - 20px));
+          margin: 10px auto 20px;
+        }
+
+        .topbar {
+          top: 10px;
+          border-radius: 28px;
+          padding: 14px;
+        }
+
+        .topbar,
+        .chat-head {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .hero {
+          padding: 6px 0 8px;
+        }
+
+        .hero h1 {
+          font-size: clamp(28px, 9vw, 42px);
+        }
+
+        .chat-shell {
+          height: min(90vh, calc(100vh - 126px));
+          max-height: calc(100vh - 110px);
+        }
+
+        .composer-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .primary-btn {
+          min-height: 46px;
+        }
+
+        .msg {
+          max-width: 100%;
+        }
+
+        .side {
+          grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body>
-    <main class="shell">
-      <section class="panel chat-panel">
-        <header class="hero">
-          <h1>LangGraph 自定义聊天 Agent</h1>
-          <p>
-            这个网页演示的是一个带记忆、工具、调度能力的自定义 Agent。
-            你可以让它和你聊天、记住偏好、查天气、搜网络信息、管理本地日程。
-          </p>
-          <div class="chips">
-            <span class="chip">LangGraph 图调度</span>
-            <span class="chip">长期记忆</span>
-            <span class="chip">天气工具</span>
-            <span class="chip">网络信息</span>
-            <span class="chip">本地日历</span>
+    <div class="frame">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">LG</div>
+          <div class="brand-copy">
+            <strong>LangGraph Chat Agent</strong>
+            <span>Premium demo for memory, tools, and orchestration</span>
           </div>
-        </header>
+        </div>
+        <div class="topbar-meta">
+          <div class="glass-pill">Memory + Tools + Scheduling</div>
+          <div class="glass-pill" id="mode">模式：检测中</div>
+        </div>
+      </header>
 
-        <div class="messages" id="messages"></div>
-
-        <form class="composer" id="composer">
-          <textarea
-            id="input"
-            placeholder="试试：我叫小陈，请记住我在上海工作。"
-          ></textarea>
-          <button type="submit" id="sendBtn">发送</button>
-        </form>
+      <section class="hero">
+        <div class="hero-kicker">Custom Agent Experience</div>
+        <h1>像产品首页一样精致的 Agent 聊天界面</h1>
+        <p>
+          这不是一个普通聊天框，而是一个带长期记忆、会话日志、工具调用和图调度能力的
+          LangGraph Agent 控制台。
+        </p>
+        <div class="hero-chips">
+          <div class="hero-chip">Long-term Memory</div>
+          <div class="hero-chip">Tool Routing</div>
+          <div class="hero-chip">Weather + Search + Calendar</div>
+          <div class="hero-chip">Blurred Glass UI</div>
+        </div>
       </section>
 
-      <aside class="panel side">
-        <div class="card">
-          <h2>当前会话</h2>
-          <div class="muted" id="threadId">Thread ID: -</div>
-          <div class="status" id="mode">模式：检测中</div>
-          <button type="button" id="newChatBtn" style="margin-top: 12px; min-width: 0; padding: 10px 14px; font-size: 13px;">新建会话</button>
-        </div>
-
-        <div class="card">
-          <h2>Agent 记忆</h2>
-          <div id="memoryBox" class="muted">还没有记忆内容。</div>
-        </div>
-
-        <div class="card">
-          <h2>快捷示例</h2>
-          <div class="examples">
-            <button type="button" data-prompt="我叫小陈，请记住我在上海工作。">记住用户信息</button>
-            <button type="button" data-prompt="帮我查一下上海天气。">查天气</button>
-            <button type="button" data-prompt="帮我搜索一下 LangGraph 是什么。">查网络信息</button>
-            <button type="button" data-prompt="帮我创建 产品评审会议 从2026-03-25 14:00到2026-03-25 15:00">创建日程</button>
-            <button type="button" data-prompt="帮我看看 2026-03-25 的日程">查看日程</button>
+      <main class="grid">
+        <section class="panel chat-shell">
+          <div class="chat-head">
+            <div>
+              <h2>Conversation</h2>
+              <p>
+                在这里直接和 Agent 对话。它会根据上下文决定是否调用工具，并把值得保留的信息写入长期记忆。
+              </p>
+            </div>
+            <div class="chat-head-meta">
+              <strong>Current Thread</strong>
+              <span id="threadId">Thread ID: -</span>
+            </div>
           </div>
-        </div>
-      </aside>
-    </main>
+
+          <div class="messages" id="messages">
+            <div class="assistant-welcome">
+              <strong>Ready when you are.</strong>
+              你可以先试试：“我叫小陈，请记住我在上海工作。” 或 “帮我查一下上海天气。”
+            </div>
+          </div>
+
+          <form class="composer" id="composer">
+            <div class="composer-shell">
+              <textarea
+                id="input"
+                placeholder="输入消息，按 Enter 发送，Shift + Enter 换行"
+              ></textarea>
+              <button type="submit" class="primary-btn" id="sendBtn">发送消息</button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="side">
+          <section class="card">
+            <h2>会话状态</h2>
+            <div class="stack">
+              <div class="info-row">
+                <strong>Session</strong>
+                <div id="threadMeta">当前还没有活跃会话</div>
+              </div>
+              <div class="info-row">
+                <strong>Runtime</strong>
+                <div class="status" id="modePanel">正在检测运行模式</div>
+              </div>
+            </div>
+            <div style="margin-top: 16px;">
+              <button type="button" class="ghost-btn" id="newChatBtn">开始新会话</button>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2>Agent 记忆</h2>
+            <p class="muted">长期记忆只存用户事实、备注和摘要，会话原文单独归档。</p>
+            <div id="memoryBox" class="memory-box">
+              <div class="memory-line">还没有记忆内容。</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2>快捷示例</h2>
+            <p class="muted">点击任意卡片，把示例问题填入输入框。</p>
+            <div class="examples">
+              <button type="button" data-prompt="我叫小陈，请记住我在上海工作。">
+                记住用户信息
+                <span>测试长期记忆与结构化事实提取</span>
+              </button>
+              <button type="button" data-prompt="帮我查一下上海天气。">
+                查询天气
+                <span>触发天气工具和结果回注</span>
+              </button>
+              <button type="button" data-prompt="帮我搜索一下 LangGraph 是什么。">
+                搜索网络信息
+                <span>触发 Web Search 工具</span>
+              </button>
+              <button type="button" data-prompt="帮我创建 产品评审会议 从2026-03-25 14:00到2026-03-25 15:00">
+                创建日程
+                <span>测试本地日历写入和工具编排</span>
+              </button>
+              <button type="button" data-prompt="帮我看看 2026-03-25 的日程">
+                查看日程
+                <span>测试本地日历读取能力</span>
+              </button>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
 
     <script>
       const messagesEl = document.getElementById("messages");
@@ -291,12 +699,17 @@
       const sendBtn = document.getElementById("sendBtn");
       const memoryBox = document.getElementById("memoryBox");
       const threadIdEl = document.getElementById("threadId");
+      const threadMetaEl = document.getElementById("threadMeta");
       const modeEl = document.getElementById("mode");
+      const modePanelEl = document.getElementById("modePanel");
       const newChatBtn = document.getElementById("newChatBtn");
       const storageKey = "langgraph-chat-agent-thread";
       let threadId = localStorage.getItem(storageKey) || "";
 
       function addMessage(role, content) {
+        const welcome = messagesEl.querySelector(".assistant-welcome");
+        if (welcome) welcome.remove();
+
         const div = document.createElement("div");
         div.className = `msg ${role}`;
         div.textContent = content;
@@ -304,9 +717,24 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
 
+      function setModeLabel(mode, loading = false) {
+        const text = loading
+          ? "模式：处理中"
+          : mode === "fallback"
+            ? "模式：本地教学模式"
+            : "模式：LLM + LangGraph";
+        modeEl.textContent = text;
+        modePanelEl.textContent = text;
+      }
+
+      function syncThreadMeta() {
+        threadIdEl.textContent = threadId ? `Thread ID: ${threadId}` : "Thread ID: -";
+        threadMetaEl.textContent = threadId ? `当前会话 ID：${threadId}` : "当前还没有活跃会话";
+      }
+
       function renderMemory(memory) {
         if (!memory) {
-          memoryBox.textContent = "还没有记忆内容。";
+          memoryBox.innerHTML = '<div class="memory-line">还没有记忆内容。</div>';
           return;
         }
 
@@ -316,32 +744,34 @@
         const lines = [];
 
         if (Object.keys(facts).length > 0) {
-          lines.push(`<div class="memory-line"><strong>用户画像</strong><br>${Object.entries(facts)
+          lines.push(`<div class="memory-line"><strong>用户画像</strong>${Object.entries(facts)
             .map(([key, value]) => `${key}: ${value}`)
             .join("<br>")}</div>`);
         }
         if (notes.length > 0) {
-          lines.push(`<div class="memory-line"><strong>记住的事项</strong><br>${notes.join("<br>")}</div>`);
+          lines.push(`<div class="memory-line"><strong>记住的事项</strong>${notes.join("<br>")}</div>`);
         }
         if (summary) {
-          lines.push(`<div class="memory-line"><strong>最近摘要</strong><br>${summary}</div>`);
+          lines.push(`<div class="memory-line"><strong>最近摘要</strong>${summary}</div>`);
         }
 
-        memoryBox.innerHTML = lines.join("") || "还没有记忆内容。";
+        memoryBox.innerHTML = lines.join("") || '<div class="memory-line">还没有记忆内容。</div>';
       }
 
       async function loadHistory() {
+        syncThreadMeta();
+
         if (!threadId) {
           addMessage("assistant", "欢迎，你可以直接和我聊天。我会尝试记住你说过的话，并在需要时调用天气、搜索和日历工具。");
           return;
         }
 
-        threadIdEl.textContent = `Thread ID: ${threadId}`;
         const response = await fetch(`/api/history/${threadId}`);
         if (!response.ok) {
           addMessage("assistant", "读取历史会话失败，你可以重新开始一个新会话。");
           return;
         }
+
         const history = await response.json();
         (history.session_history || []).forEach((item) => {
           addMessage(item.role === "user" ? "user" : "assistant", item.content);
@@ -352,29 +782,26 @@
       async function sendMessage(message) {
         addMessage("user", message);
         sendBtn.disabled = true;
-        modeEl.textContent = "模式：处理中";
+        setModeLabel("loading", true);
 
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ thread_id: threadId, message }),
         });
+
         const payload = await response.json();
         threadId = payload.thread_id;
         localStorage.setItem(storageKey, threadId);
-        threadIdEl.textContent = `Thread ID: ${threadId}`;
-        modeEl.textContent = payload.reply.includes("本地教学模式")
-          ? "模式：本地教学模式"
-          : "模式：LLM + LangGraph";
+        syncThreadMeta();
 
         const visibleMessages = payload.turn_messages || [];
         const toolMessages = visibleMessages.filter((item) => item.role === "tool");
         toolMessages.forEach((item) => addMessage("tool", item.content));
         addMessage("assistant", payload.reply);
+
         renderMemory(payload.memory);
-        modeEl.textContent = payload.mode === "fallback"
-          ? "模式：本地教学模式"
-          : "模式：LLM + LangGraph";
+        setModeLabel(payload.mode);
         sendBtn.disabled = false;
       }
 
@@ -386,7 +813,6 @@
         await sendMessage(message);
       });
 
-      // 按回车发送消息（Shift+Enter 换行）
       inputEl.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
@@ -398,24 +824,25 @@
         }
       });
 
-      // 新建会话按钮
       newChatBtn.addEventListener("click", () => {
         localStorage.removeItem(storageKey);
         threadId = "";
-        threadIdEl.textContent = "Thread ID: -";
+        syncThreadMeta();
         messagesEl.innerHTML = "";
-        modeEl.textContent = "模式：检测中";
-        addMessage("assistant", "已创建新会话，欢迎开始新的对话！");
+        setModeLabel("fallback");
+        memoryBox.innerHTML = '<div class="memory-line">还没有记忆内容。</div>';
+        addMessage("assistant", "已创建新会话，欢迎开始新的对话。");
       });
 
       document.querySelectorAll("[data-prompt]").forEach((button) => {
-        button.addEventListener("click", async () => {
+        button.addEventListener("click", () => {
           const message = button.getAttribute("data-prompt");
           inputEl.value = message;
           inputEl.focus();
         });
       });
 
+      syncThreadMeta();
       loadHistory();
     </script>
   </body>
