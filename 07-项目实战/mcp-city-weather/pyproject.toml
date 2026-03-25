@@ -1,0 +1,12 @@
+[project]
+name = "mcp-city-weather"
+version = "0.1.0"
+description = "A practical MCP weather server for querying city weather."
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.28.0",
+    "mcp[cli]>=1.17.0",
+]
+
+[tool.uv]
+package = false
