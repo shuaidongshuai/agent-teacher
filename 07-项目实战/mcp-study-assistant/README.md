@@ -1,5 +1,20 @@
 # MCP 学习资料助手
 
+## 目录
+
+1. [项目解决什么问题](#1-项目解决什么问题)
+2. [为什么这个项目适合当前学习阶段](#2-为什么这个项目适合当前学习阶段)
+3. [前置知识](#3-前置知识)
+4. [学习目标](#4-学习目标)
+5. [核心架构与流程](#5-核心架构与流程)
+6. [运行方式](#6-运行方式)
+7. [推荐观察点](#7-推荐观察点)
+8. [常见失败原因](#8-常见失败原因)
+9. [练习任务](#9-练习任务)
+10. [下一步延伸](#10-下一步延伸)
+
+## 1. 项目解决什么问题
+
 这是一个适合教学演示的最小 MCP 项目。
 
 它把当前仓库里的 Markdown 学习资料暴露成一个本地 MCP 服务，并提供一个最小客户端演示完整链路：
@@ -10,15 +25,34 @@
 4. 读取文档资源
 5. 获取讲解 Prompt
 
-## 项目目标
+## 2. 为什么这个项目适合当前学习阶段
 
-这个项目重点不是“做一个大而全的 AI 应用”，而是让你清楚看到：
+这个项目特别适合用来理解 MCP 三类能力的分工：
 
-- MCP 服务端怎么暴露能力
-- MCP 客户端怎么发现能力
-- Tool、Resource、Prompt 三者到底怎么分工
+- Tool：主动执行动作
+- Resource：读取资料
+- Prompt：提供可复用的提示模板
 
-## 目录结构
+相比天气项目，它更接近“知识型 MCP 服务”。
+
+## 3. 前置知识
+
+建议先完成：
+
+1. [04-工具调用与函数调用/README.md](/Users/chenmingdong01/Documents/AI/agent/04-工具调用与函数调用/README.md)
+2. [07-项目实战/2.MCP学习资料助手实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/2.MCP学习资料助手实战.md)
+
+## 4. 学习目标
+
+完成这个项目后，你应该能够：
+
+1. 理解 Tool、Resource、Prompt 在 MCP 里的分工
+2. 理解客户端为什么先 discover 再 call/read
+3. 理解文档资料为什么更适合暴露成 Resource
+
+## 5. 核心架构与流程
+
+目录结构：
 
 ```text
 07-项目实战/mcp-study-assistant/
@@ -27,105 +61,68 @@
 └── demo_client.py
 ```
 
-## 运行方式
-
-### 方式一：在仓库根目录运行
-
-当前目录应为：
-
-```text
-F:\github\agent-teacher
-```
-
-运行：
-
-```bash
-python 07-项目实战/mcp-study-assistant/demo_client.py --topic MCP --days 7
-```
-
-带查询词：
-
-```bash
-python 07-项目实战/mcp-study-assistant/demo_client.py --query Agent --topic LangGraph --days 5
-```
-
-显示更详细的交互日志：
-
-```bash
-python 07-项目实战/mcp-study-assistant/demo_client.py --query RAG --verbose
-```
-
-### 方式二：在项目目录运行
-
-当前目录应为：
-
-```text
-F:\github\agent-teacher\07-项目实战\mcp-study-assistant
-```
-
-运行：
-
-```bash
-python demo_client.py --topic MCP --days 7
-```
-
-带查询词：
-
-```bash
-python demo_client.py --query Agent --topic LangGraph --days 5
-```
-
-显示更详细的交互日志：
-
-```bash
-python demo_client.py --query RAG --verbose
-```
-
-### 常见报错
-
-如果你已经在 `07-项目实战/mcp-study-assistant/` 目录里，却仍然执行：
-
-```bash
-python 07-项目实战/mcp-study-assistant/demo_client.py --topic MCP --days 7
-```
-
-就会把路径重复拼接，出现类似报错：
-
-```text
-...mcp-study-assistant\07-项目实战\mcp-study-assistant\demo_client.py
-```
-
-原因不是代码有问题，而是当前目录和相对路径一起重复了。
-
-## 这个项目有哪些能力
+当前项目提供：
 
 ### Tools
 
 - `search_docs`
-  按关键词搜索仓库中的 Markdown 教学资料
 - `build_study_plan`
-  根据主题和天数生成一个简单学习计划
 
 ### Resources
 
 - `course://<相对路径>`
-  读取仓库中的 Markdown 教学文档
 
 ### Prompts
 
 - `explain_topic`
-  生成一个“给指定人群讲解某个主题”的 Prompt 模板
 
-## 适合你观察什么
+## 6. 运行方式
 
-1. 服务端如何响应 `initialize`
+在仓库根目录运行：
+
+```bash
+python 07-项目实战/mcp-study-assistant/demo_client.py --topic MCP --days 7
+python 07-项目实战/mcp-study-assistant/demo_client.py --query Agent --topic LangGraph --days 5
+python 07-项目实战/mcp-study-assistant/demo_client.py --query RAG --verbose
+```
+
+也可以在项目目录运行：
+
+```bash
+python demo_client.py --topic MCP --days 7
+python demo_client.py --query Agent --topic LangGraph --days 5
+python demo_client.py --query RAG --verbose
+```
+
+## 7. 推荐观察点
+
+建议重点观察：
+
+1. 服务端如何分别暴露 Tool、Resource、Prompt
 2. 客户端为什么先 `list`，再 `call/read`
-3. 文档为什么更适合做 Resource，而不是 Tool
-4. Prompt 单独暴露后，对宿主应用有什么好处
+3. 哪些能力更适合 Resource，而不是 Tool
+4. Prompt 单独暴露后，对宿主应用意味着什么
 
-## 可继续扩展的方向
+## 8. 常见失败原因
+
+常见问题包括：
+
+1. 当前目录和相对路径重复，导致找不到脚本
+2. Tool、Resource、Prompt 的职责边界写混
+3. 资源路径设计不统一，导致读取不稳定
+4. 搜索结果排序过粗，影响后续学习计划质量
+
+## 9. 练习任务
+
+建议做下面 3 个练习：
 
 1. 增加 `list_topics` Tool
 2. 增加 `generate_quiz` Prompt
-3. 给 `search_docs` 增加更好的排序
-4. 把客户端接到真实 LLM，让 LLM 自动决定调用哪个 Tool
+3. 给 `search_docs` 增加更好的排序逻辑
+
+## 10. 下一步延伸
+
+如果你已经理解了 MCP 的三类能力，可以继续做两件事：
+
+1. 把客户端接到真实 LLM，让模型自动决定调用哪个能力
+2. 把 MCP 能力接到 Agent 项目里，让它成为更大的任务系统组件

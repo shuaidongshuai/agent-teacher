@@ -1,8 +1,23 @@
 # 学习资料整理 ReAct Agent
 
-这是一个更像真实 Agent 的教学项目。
+## 目录
 
-它不是“让 LLM 先把答案一次性写完”，而是：
+1. [项目解决什么问题](#1-项目解决什么问题)
+2. [为什么这个项目适合当前学习阶段](#2-为什么这个项目适合当前学习阶段)
+3. [前置知识](#3-前置知识)
+4. [学习目标](#4-学习目标)
+5. [核心架构与流程](#5-核心架构与流程)
+6. [运行方式](#6-运行方式)
+7. [推荐观察点](#7-推荐观察点)
+8. [常见失败原因](#8-常见失败原因)
+9. [练习任务](#9-练习任务)
+10. [下一步延伸](#10-下一步延伸)
+
+## 1. 项目解决什么问题
+
+这是一个更接近真实 Agent 的教学项目。
+
+它不是让 LLM 一次性把答案写完，而是：
 
 1. 给 LLM 一个总任务
 2. 让 LLM 每一轮自主思考
@@ -12,32 +27,35 @@
 
 这就是更接近真实 Agent 的 ReAct 模式。
 
-## 运行方式
+## 2. 为什么这个项目适合当前学习阶段
 
-```bash
-python3 main.py "RAG 入门" --audience "初学者"
-```
+这个项目适合作为**单 Agent 向自主决策 Agent 过渡**的项目。
 
-指定输出目录：
+它比 LangGraph 聊天 Agent 更强调：
 
-```bash
-python3 main.py "RAG 入门" --audience "初学者" --output /tmp/rag-react-demo
-```
+- 模型自主决策
+- 工具调用循环
+- Thought / Action / Observation 轨迹
 
-## 接入 OpenAI API
+## 3. 前置知识
 
-```bash
-export OPENAI_API_KEY=你的Key
-export OPENAI_BASE_URL=https://api.chatanywhere.tech
-export OPENAI_MODEL=gpt-4o
-export OPENAI_API_STYLE=chat_completions
-export OPENAI_SSL_VERIFY=false
-```
+建议先完成：
 
-如果没有配置 `OPENAI_API_KEY`，程序会回退到最小本地模式，仅生成一个入口文档。  
-如果配置了 Key，程序会进入真正的 ReAct + 工具循环。
+1. [04-工具调用与函数调用/README.md](/Users/chenmingdong01/Documents/AI/agent/04-工具调用与函数调用/README.md)
+2. [05-Agent/README.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/README.md)
+3. [agent-chat-langgraph/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/README.md)
 
-## 主流程图
+## 4. 学习目标
+
+完成这个项目后，你应该能够：
+
+1. 理解 ReAct 模式的基本循环
+2. 理解为什么 Thought、Action、Observation 要显式保留
+3. 理解模型自主用工具时最容易失控的地方
+
+## 5. 核心架构与流程
+
+### 主流程图
 
 ```mermaid
 flowchart TD
@@ -65,7 +83,7 @@ flowchart TD
     F --> O
 ```
 
-## 模块关系图
+### 模块关系图
 
 ```mermaid
 flowchart LR
@@ -88,57 +106,56 @@ flowchart LR
     H --> A
 ```
 
-## ReAct 每个阶段在做什么
+## 6. 运行方式
 
-1. `Thought`
-LLM 根据当前任务、可用工具和历史轨迹，思考下一步最应该做什么。
+```bash
+python3 main.py "RAG 入门" --audience "初学者"
+python3 main.py "RAG 入门" --audience "初学者" --output /tmp/rag-react-demo
+```
 
-2. `Action`
-LLM 选择一个动作：
-- 调用工具
-- 或直接结束任务
+### 接入 OpenAI API
 
-3. `Observation`
-Agent 真的去执行工具，并把工具返回值整理成结构化观察结果。
+```bash
+export OPENAI_API_KEY=你的Key
+export OPENAI_BASE_URL=https://api.chatanywhere.tech
+export OPENAI_MODEL=gpt-4o
+export OPENAI_API_STYLE=chat_completions
+export OPENAI_SSL_VERIFY=false
+```
 
-4. `Next Thought`
-下一轮 LLM 再根据最新 Observation 继续思考。
+如果没有配置 `OPENAI_API_KEY`，程序会回退到最小本地模式。
 
-所以这个项目的真实循环是：
+## 7. 推荐观察点
 
-`Thought -> Action -> Observation -> Thought -> ... -> Finish`
+建议重点看：
 
-## 工具列表
+1. ReAct Prompt 是怎样把历史轨迹和工具列表一起给模型的
+2. 模型输出的 JSON 决策怎样被解析
+3. 工具执行结果怎样转成下一轮 Observation
+4. 本地回退模式和真实循环之间差了哪些能力
 
-当前默认注册的工具有：
+## 8. 常见失败原因
 
-- `list_dir`：列目录
-- `read_file`：读文件
-- `write_file`：覆盖写文件
-- `append_file`：追加写文件
-- `make_dir`：创建目录
-- `file_exists`：检查文件或目录是否存在
+最常见的问题包括：
 
-## 如何扩展工具
+1. 模型输出格式不稳定，导致 JSON 解析失败
+2. 工具集合过多，模型决策噪音变大
+3. Observation 写得太差，模型下一轮无法正确利用
+4. 没有保留完整轨迹，后期很难复盘失败原因
 
-这套工具系统是可扩展的。
+## 9. 练习任务
 
-你只需要：
+建议做下面 3 个练习：
 
-1. 新建一个继承 `BaseTool` 或 `WorkspaceTool` 的类
-2. 给它定义 `spec`
-3. 实现 `run(**kwargs)`
-4. 在 `StudyMaterialReActAgent._register_default_tools()` 里注册
+1. 新增一个只读工具，例如“读取某主题目录结构”
+2. 故意制造一次工具失败，观察 Agent 是否能继续推进
+3. 为轨迹增加一个简单评分维度，辅助后续评测
 
-这样新的工具就会自动进入 ReAct Prompt，LLM 后续就可以自主选择它。
+## 10. 下一步延伸
 
-## 你应该重点看哪里
+如果你已经理解 ReAct 单 Agent，可以继续升级到：
 
-1. [main.py](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-study-react/main.py#L47)
-这里是工具协议和状态结构。
-
-2. [main.py](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-study-react/main.py#L252)
-这里是 OpenAI 兼容客户端，负责把 ReAct Prompt 发给模型并解析 JSON 决策。
-
-3. [main.py](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-study-react/main.py#L447)
-这里是核心 Agent 循环，真正体现“模型决定是否用工具”的地方。
+1. 规划执行分离：
+   [agent-planner-executor/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-planner-executor/README.md)
+2. 多 Agent 协作：
+   [agent-digital-employee-multi-agent/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-digital-employee-multi-agent/README.md)

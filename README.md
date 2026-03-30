@@ -1,174 +1,157 @@
-# LLM 与 Agent 学习资料库
+# LLM 与 Agent 工程化学习资料库
 
-这是一个面向系统学习的 AI / LLM / Agent 学习项目。  
-目标不是堆资料，而是把学习路径拆成一条能从入门走到工程落地的主线：
-
-- 先理解模型为什么能工作
-- 再理解怎样把模型接进应用
-- 再理解 Agent 为什么会成功、也为什么会失败
-- 最后进入评测、优化、项目复盘和面试表达
+这是一个面向工程转型学习者的 AI 教学项目。  
+目标不是堆资料，而是把 `LLM -> Prompt -> 工具调用 -> RAG -> Agent -> 评测 -> 项目实战 -> 面试表达` 串成一条可执行的学习主线。
 
 ## 适合谁
 
-这个仓库尤其适合下面三类学习者：
+这套内容尤其适合下面三类学习者：
 
-1. 刚接触 AI 应用，希望按顺序建立完整知识框架的人
-2. 已经做过一些 Demo，但知识零散、不知道如何继续进阶的人
-3. 想把 LLM、RAG、工具调用、Agent 串成一个系统工程认知的人
+1. 已经会写一些业务代码，想系统进入 AI 应用工程的人
+2. 做过 Demo，但还没形成完整架构判断和优化方法的人
+3. 想把知识学习、项目实战、复盘表达串成一套对外课程的人
 
-## 总阅读顺序
+## 阅读分层
 
-建议严格按下面顺序推进，不要一上来直接跳到 Agent 或项目：
+为了避免“看了很多，但不知道先学什么”，整个仓库按 4 层使用。
 
-1. `00-总览`
-   先看学习路线图和知识地图，知道整套内容为什么这样设计。
-2. `01-LLM基础`
-   建立模型、Token、上下文窗口、训练与采样的底层认知。
-3. `02-Prompt工程`
-   学会怎样把任务说清楚，怎样约束输出，怎样调试失败。
-4. `04-工具调用与函数调用`
-   先理解模型如何安全、稳定地连接外部能力。
-5. `03-RAG`
-   学习怎样把正确信息送到模型面前，补齐知识供给链路。
-6. `05-Agent`
-   理解任务规划、状态推进、工具协同、架构选型和生产难点。
-7. `06-评测与优化`
-   学会判断系统哪里变好、哪里变坏，以及怎样系统定位问题。
-8. `07-项目实战`
-   把前面的知识变成可以运行、可以复盘的项目。
-9. `11-模拟面试`
-   用表达和问答检验自己是否真的理解，而不是只是“看过”。
+### 必修主线
 
-辅助目录的使用方式：
+建议严格按下面顺序推进：
 
-- `08-资料收集`：看到资料先收进来，再决定是否转化成正式文档
-- `09-术语表`：每学完一个主题，补自己的术语定义
-- `10-每周计划`：用周计划和复盘避免“学了很多但没有沉淀”
+1. [00-总览](/Users/chenmingdong01/Documents/AI/agent/00-总览/README.md)
+2. [01-LLM基础](/Users/chenmingdong01/Documents/AI/agent/01-LLM基础/README.md)
+3. [02-Prompt工程](/Users/chenmingdong01/Documents/AI/agent/02-Prompt工程/README.md)
+4. [04-工具调用与函数调用](/Users/chenmingdong01/Documents/AI/agent/04-工具调用与函数调用/README.md)
+5. [03-RAG](/Users/chenmingdong01/Documents/AI/agent/03-RAG/README.md)
+6. [05-Agent](/Users/chenmingdong01/Documents/AI/agent/05-Agent/README.md)
+7. [06-评测与优化](/Users/chenmingdong01/Documents/AI/agent/06-评测与优化/README.md)
+8. [07-项目实战](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/README.md)
+9. [11-模拟面试](/Users/chenmingdong01/Documents/AI/agent/11-模拟面试/README.md)
 
-## 为什么不是先学 RAG 再学工具调用
-
-很多人会把 RAG 和 Agent 看成更“高级”的部分，于是急着往后学。  
-但工程上更稳的顺序通常是：
-
-1. 先理解模型基本行为
-2. 再学怎样表达任务
-3. 再学怎样让模型调用外部能力
-4. 再学怎样把外部知识供给做好
-5. 最后再学多步决策系统
-
-原因很简单：
+这条顺序保持当前仓库的工程路线，不把 `03-RAG` 提前到 `04-工具调用与函数调用` 前面。原因是：
 
 - 工具调用是 Agent 的基础能力之一
-- RAG 本质上也是一种外部信息接入机制
-- 如果前两层不稳，后面的 Agent 往往只是“复杂但不可靠”
+- RAG 本质上也是外部信息接入机制
+- 先掌握“让模型安全连接外部能力”，再学“让模型稳定获得外部知识”，工程上更稳
 
-## 每一阶段建议产出
+### 可选辅助模块
 
-不要只看文档，建议每一阶段都产出一点真实东西。
+下面 3 个目录默认视为辅助模块，不替代主线章节：
 
-### 第一阶段：建立基础认知
+- [08-资料收集](/Users/chenmingdong01/Documents/AI/agent/08-资料收集/README.md)：先收集、再筛选、再转写
+- [09-术语表](/Users/chenmingdong01/Documents/AI/agent/09-术语表/README.md)：把概念翻译成自己的语言
+- [10-每周计划](/Users/chenmingdong01/Documents/AI/agent/10-每周计划/README.md)：把学习变成持续推进的节奏
+
+### 项目穿插节点
+
+建议不要等理论全部看完才做项目，而是在 3 个节点穿插：
+
+1. 学完 `02 + 04` 后，先做一个最小工具调用或 MCP 项目
+2. 学完 `03` 后，做一个 RAG 项目并尝试写出失败复盘
+3. 学完 `05 + 06` 后，再进入单 Agent 和多 Agent 项目
+
+对应入口：
+
+- [07-项目实战/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/README.md)
+
+### 面试回看节点
+
+`11-模拟面试` 不建议最后才看。更有效的方式是：
+
+1. 学完 `01-02` 后做一次基础口头复述
+2. 学完 `03-05` 后做一次模块化自测
+3. 项目完成后再做一轮项目与评测问答
+
+## 推荐学习路径
+
+如果你是工程背景转型到 AI，推荐按下面节奏推进：
+
+### 第一阶段：建立底层认知
 
 对应目录：
 
-- `00-总览`
-- `01-LLM基础`
-- `02-Prompt工程`
+- [00-总览](/Users/chenmingdong01/Documents/AI/agent/00-总览/README.md)
+- [01-LLM基础](/Users/chenmingdong01/Documents/AI/agent/01-LLM基础/README.md)
+- [02-Prompt工程](/Users/chenmingdong01/Documents/AI/agent/02-Prompt工程/README.md)
 
 建议产出：
 
-- 一份你自己的 LLM 原理解释笔记
-- 一个基础 Prompt 模板集合
-- 一个结构化输出的小 Demo
+- 一份自己的 LLM 原理解释稿
+- 一套 Prompt 模板
+- 一个结构化输出小 Demo
 
-### 第二阶段：进入应用搭建
+### 第二阶段：进入能力接入
 
 对应目录：
 
-- `04-工具调用与函数调用`
-- `03-RAG`
+- [04-工具调用与函数调用](/Users/chenmingdong01/Documents/AI/agent/04-工具调用与函数调用/README.md)
+- [03-RAG](/Users/chenmingdong01/Documents/AI/agent/03-RAG/README.md)
 
 建议产出：
 
 - 一个工具调用 Demo
-- 一个最小知识库问答系统
-- 一份“效果差时怎么排查”的链路图
+- 一个最小 RAG 系统
+- 一张“效果差时怎么定位”的链路图
 
 ### 第三阶段：进入 Agent 设计
 
 对应目录：
 
-- `05-Agent`
-- `07-项目实战`
+- [05-Agent](/Users/chenmingdong01/Documents/AI/agent/05-Agent/README.md)
+- [07-项目实战](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/README.md)
 
 建议产出：
 
-- 一个多步任务 Agent Demo
-- 一份 Agent 架构选型说明
-- 一份 Agent 失败案例复盘
+- 一个单 Agent 项目
+- 一份架构选型说明
+- 一次失败案例复盘
 
-### 第四阶段：进入工程优化
+### 第四阶段：进入评测与表达
 
 对应目录：
 
-- `06-评测与优化`
-- `11-模拟面试`
+- [06-评测与优化](/Users/chenmingdong01/Documents/AI/agent/06-评测与优化/README.md)
+- [11-模拟面试](/Users/chenmingdong01/Documents/AI/agent/11-模拟面试/README.md)
 
 建议产出：
 
-- 一套简单评测集
-- 一份线上问题定位记录
-- 一轮模拟面试答案整理
+- 一套最小评测集
+- 一份回归验证记录
+- 一轮面试问答整理
 
-## 目录说明
+## 你会在仓库里看到什么
 
-- `00-总览`：学习路线图、知识地图、整套内容的全局视角
-- `01-LLM基础`：模型原理、Transformer、上下文窗口、训练与采样
-- `02-Prompt工程`：任务表达、约束设计、Few-shot、结构化输出、调试
-- `03-RAG`：数据清洗、切分、Embedding、召回、重排、查询理解
+- `00-总览`：整套课的导航页、路线图和知识地图
+- `01-LLM基础`：模型原理、Transformer、Token、训练与采样
+- `02-Prompt工程`：任务表达、约束设计、few-shot、结构化输出、调试
+- `03-RAG`：数据清洗、Embedding、召回、重排、查询理解
 - `04-工具调用与函数调用`：函数调用、参数设计、错误处理、MCP
-- `05-Agent`：架构选型、状态管理、稳定性设计、观测与评测
-- `06-评测与优化`：Prompt、RAG、Agent 的评测框架与优化方法论
-- `07-项目实战`：从 RAG 到 Agent 的实战项目与练习路径
-- `08-资料收集`：外部文章、课程、论文、仓库的收集与初步整理
-- `09-术语表`：关键概念的复述、翻译和自己的理解
-- `10-每周计划`：周目标、输入、输出、卡点与复盘
-- `11-模拟面试`：阶段性自测、知识表达训练、项目复盘问答
+- `05-Agent`：架构选型、稳定性、观测与生产难点
+- `06-评测与优化`：Prompt、RAG、Agent 的评测与优化闭环
+- `07-项目实战`：从 MCP、RAG 到单 Agent、多 Agent 的实战项目
+- `08-资料收集`：外部资料的收集与筛选入口
+- `09-术语表`：概念内化区
+- `10-每周计划`：节奏控制与复盘入口
+- `11-模拟面试`：表达训练与查漏补缺
+- `99-内容维护`：后续新增教学内容的模板和质检规范
 
-## 推荐学习节奏
+## 使用建议
 
-如果你是边工作边学，建议按下面节奏推进：
+建议把整个仓库当成一门“可交付课程”来维护，而不是私人笔记：
 
-1. 每周固定 1 个主主题，不要并行学太多新概念
-2. 每学完 1 个主题，至少做 1 个小练习或 1 次复盘
-3. 每两周回头看一次 `09-术语表`，检查自己是否真的能讲清楚
-4. 每做完 1 个项目，补 1 次失败复盘，不要只记录“成功跑通”
+1. 新资料先进入 [08-资料收集](/Users/chenmingdong01/Documents/AI/agent/08-资料收集/README.md)
+2. 消化后再转成正式章节文档
+3. 重要术语同步写进 [09-术语表](/Users/chenmingdong01/Documents/AI/agent/09-术语表/README.md)
+4. 每周用 [10-每周计划](/Users/chenmingdong01/Documents/AI/agent/10-每周计划/README.md) 做推进和复盘
+5. 新增文档前先看 [99-内容维护/README.md](/Users/chenmingdong01/Documents/AI/agent/99-内容维护/README.md)
 
-## 这个仓库的维护方式
+## 总结与下一步
 
-建议以后都按这个流程维护：
+如果你是第一次进入这个仓库，建议现在按下面顺序开始：
 
-1. 新看到一篇资料，先放到 `08-资料收集`
-2. 消化后，把自己的理解沉淀到对应主题目录
-3. 遇到重要概念，在 `09-术语表` 用自己的话重写
-4. 每周在 `10-每周计划` 记录输入、输出、卡点和下周安排
-5. 做完项目后，把失败原因和优化思路写进 `06-评测与优化` 或项目文档
-
-## 一个重要原则
-
-学习 LLM 和 Agent，不要只沿着“会不会调用接口”这一条线走。  
-建议始终保持 4 条并行主线：
-
-- 概念线：知道它是什么、为什么存在
-- 工程线：知道它怎么搭建、怎么调试
-- 评测线：知道怎样判断它是否真的变好
-- 实战线：知道它在真实应用里为什么会失败
-
-## 下一步建议
-
-如果你是第一次进入这个仓库，建议现在直接按下面顺序开始：
-
-1. 先读 `00-总览/学习路线图.md`
-2. 再读 `01-LLM基础/README.md`
-3. 读完基础后进入 `02-Prompt工程/README.md`
-4. 然后进入 `04-工具调用与函数调用/README.md`
-5. 再根据目标进入 `03-RAG`、`05-Agent` 和 `07-项目实战`
+1. 先读 [00-总览/README.md](/Users/chenmingdong01/Documents/AI/agent/00-总览/README.md)
+2. 再进入 [01-LLM基础/README.md](/Users/chenmingdong01/Documents/AI/agent/01-LLM基础/README.md)
+3. 学完基础后进入 [02-Prompt工程/README.md](/Users/chenmingdong01/Documents/AI/agent/02-Prompt工程/README.md)
+4. 然后进入 [04-工具调用与函数调用/README.md](/Users/chenmingdong01/Documents/AI/agent/04-工具调用与函数调用/README.md)
+5. 再根据目标推进到 [03-RAG/README.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/README.md)、[05-Agent/README.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/README.md) 和 [07-项目实战/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/README.md)
