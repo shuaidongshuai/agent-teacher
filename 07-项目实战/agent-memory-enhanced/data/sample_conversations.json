@@ -1,0 +1,46 @@
+[
+  {
+    "id": "demo_001",
+    "description": "基础信息记忆测试",
+    "turns": [
+      {"role": "user", "content": "你好，我叫张明，在北京工作，是一名数据工程师。"},
+      {"role": "user", "content": "我最近在学习 LangGraph 和 RAG 相关的知识。"},
+      {"role": "user", "content": "你还记得我叫什么名字吗？我在哪里工作？"},
+      {"role": "user", "content": "我在学什么来着？"}
+    ]
+  },
+  {
+    "id": "demo_002",
+    "description": "偏好记忆测试",
+    "turns": [
+      {"role": "user", "content": "我喜欢用 Python 写代码，不太喜欢 Java。"},
+      {"role": "user", "content": "平时喜欢看技术博客，最常看的是掘金和 GitHub Trending。"},
+      {"role": "user", "content": "推荐一门编程语言给我学吧。"},
+      {"role": "user", "content": "推荐一些技术内容获取渠道？"}
+    ]
+  },
+  {
+    "id": "demo_003",
+    "description": "任务跟踪和工作记忆测试",
+    "turns": [
+      {"role": "user", "content": "我正在做一个金融投研助手的项目，用到了 RAG 技术。"},
+      {"role": "user", "content": "目前遇到的问题是检索召回率不够高，大概只有60%左右。"},
+      {"role": "user", "content": "我试过调整 chunk size 但效果不明显。"},
+      {"role": "user", "content": "帮我总结一下我目前项目的状况和问题。"}
+    ]
+  },
+  {
+    "id": "demo_004",
+    "description": "长对话压缩测试",
+    "turns": [
+      {"role": "user", "content": "我想了解一下 Agent 的基本概念。"},
+      {"role": "user", "content": "Agent 和普通的 LLM 调用有什么区别？"},
+      {"role": "user", "content": "ReAct 模式是什么意思？"},
+      {"role": "user", "content": "那 LangGraph 和 ReAct 有什么关系？"},
+      {"role": "user", "content": "我能用 LangGraph 实现一个简单的 ReAct Agent 吗？"},
+      {"role": "user", "content": "需要用到哪些工具？"},
+      {"role": "user", "content": "好的，还有其他 Agent 框架推荐吗？"},
+      {"role": "user", "content": "帮我总结一下今天我们聊了哪些关于 Agent 的内容。"}
+    ]
+  }
+]

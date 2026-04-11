@@ -1,0 +1,26 @@
+[
+  {
+    "query": "请分析公司的盈利能力变化趋势，并解释毛利率下降的主要原因，同时对比研发投入是否在增长",
+    "complexity": "complex",
+    "expected_retrieval_rounds": 2,
+    "hint": "需要跨盈利能力分析和研发投入两个章节检索"
+  },
+  {
+    "query": "公司的现金流状况如何？经营活动现金流能否覆盖资本开支？",
+    "complexity": "moderate",
+    "expected_retrieval_rounds": 1,
+    "hint": "集中在现金流分析章节，但需要判断经营现金流 vs 投资活动"
+  },
+  {
+    "query": "从收入结构和成本变化两个维度，评估公司未来一年的经营风险",
+    "complexity": "complex",
+    "expected_retrieval_rounds": 3,
+    "hint": "需要业务分部、成本结构、风险因素三个章节的信息"
+  },
+  {
+    "query": "哪个业务板块毛利率最高？增长最快的是哪个？",
+    "complexity": "simple",
+    "expected_retrieval_rounds": 1,
+    "hint": "业务分部分析章节一次检索即可"
+  }
+]

@@ -1,0 +1,5 @@
+# 核心依赖
+langgraph>=0.2.0
+pytest>=7.0.0
+
+# LLM API（使用 urllib，无需 openai SDK）

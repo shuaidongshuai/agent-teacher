@@ -5,21 +5,21 @@ from typing import List
 
 
 class SimpleEmbeddingModel:
-    """
-    教学型 embedding 占位实现。
+    “””
+    教学型 embedding 占位实现，满足 EmbeddingModel 协议。
 
     为什么先做一个假的？
-    因为第一阶段的重点是理解“切片逻辑”，而不是先被模型依赖卡住。
+    因为第一阶段的重点是理解”切片逻辑”，而不是先被模型依赖卡住。
 
-    后续你可以把这个类替换成：
-    - sentence-transformers
-    - BGE 系列
-    - Jina Embeddings
-    - 金融领域专用 embedding
-    """
+    后续你可以把这个类替换成 BGEEmbeddingModel（见 bge_embedding.py）。
+    “””
 
     def __init__(self, dim: int = 16) -> None:
-        self.dim = dim
+        self._dim = dim
+
+    @property
+    def dimension(self) -> int:
+        return self._dim
 
     def encode(self, texts: List[str]) -> List[List[float]]:
         vectors: List[List[float]] = []
@@ -29,7 +29,7 @@ class SimpleEmbeddingModel:
             # 这样演示相似度逻辑时更容易观察现象。
             seed = abs(hash(text)) % (10**6)
             rng = random.Random(seed)
-            vector = [rng.uniform(-1.0, 1.0) for _ in range(self.dim)]
+            vector = [rng.uniform(-1.0, 1.0) for _ in range(self._dim)]
             vectors.append(vector)
 
         return vectors

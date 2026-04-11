@@ -3,25 +3,29 @@ from __future__ import annotations
 import math
 from typing import List
 
-from app.embeddings.simple_embedding import SimpleEmbeddingModel
+from app.embeddings.base import EmbeddingModel
 
 from .models import Block, Chunk
 
 
 class SemanticChunker:
-    """
-    一个教学型的“结构优先 + 语义辅助”切片器。
+    “””
+    一个教学型的”结构优先 + 语义辅助”切片器。
 
     设计原则：
     1. 标题是强边界
     2. 表格尽量单独成块
     3. 正文段落通过相邻语义相似度判断是否拼接
     4. 保留页码、section_path、block_type 等 metadata
-    """
+
+    embedding_model 支持任何满足 EmbeddingModel 协议的实现：
+    - SimpleEmbeddingModel（教学占位）
+    - BGEEmbeddingModel（真实模型）
+    “””
 
     def __init__(
         self,
-        embedding_model: SimpleEmbeddingModel,
+        embedding_model: EmbeddingModel,
         similarity_threshold: float = 0.78,
         max_chars: int = 1200,
         min_chars: int = 200,

@@ -1,0 +1,4 @@
+# 评测 Pipeline 核心依赖（无需额外安装即可运行 exact_match 和 rag_metrics）
+# Python >= 3.9
+
+# LLM Judge 需要网络访问 OpenAI 兼容 API（使用 urllib，无需额外依赖）

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "rag_001",
+    "query": "公司去年毛利率是多少？",
+    "reference_answer": "公司2023年毛利率为35.2%，较上年的38.5%下降了3.3个百分点。",
+    "ground_truth_contexts": ["block_profit_001", "block_profit_002"],
+    "retrieved_contexts": ["block_profit_001", "block_cost_003", "block_profit_002", "block_revenue_001", "block_risk_002"],
+    "prediction": "根据年报数据，公司2023年的综合毛利率为35.2%，较上年同期的38.5%下降了3.3个百分点，主要受原材料价格上涨影响。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "single_fact", "difficulty": "easy"}
+  },
+  {
+    "id": "rag_002",
+    "query": "公司研发投入是多少？同比变化如何？",
+    "reference_answer": "公司2023年研发投入12.3亿元，较上年10.8亿元同比增长13.9%。",
+    "ground_truth_contexts": ["block_rd_001", "block_rd_002"],
+    "retrieved_contexts": ["block_rd_001", "block_rd_002", "block_revenue_003", "block_cost_001", "block_outlook_002"],
+    "prediction": "2023年公司研发投入达到12.3亿元，同比增长13.9%，研发投入占营业收入比例为6.6%。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "single_fact", "difficulty": "easy"}
+  },
+  {
+    "id": "rag_003",
+    "query": "分析公司盈利能力变化趋势",
+    "reference_answer": "公司盈利能力呈现营收增长但利润率下降的趋势：营收增长15.3%，但毛利率从38.5%降至35.2%，净利率从11.2%降至9.8%。主要原因是原材料成本上升和海外市场竞争加剧。",
+    "ground_truth_contexts": ["block_profit_001", "block_profit_002", "block_cost_001", "block_mda_001"],
+    "retrieved_contexts": ["block_profit_001", "block_revenue_001", "block_cost_001", "block_profit_002", "block_segment_001"],
+    "prediction": "公司盈利能力出现分化：一方面营收保持15.3%的增长，另一方面毛利率从38.5%下降至35.2%。净利率也从上年的11.2%降至9.8%。盈利能力下降主要源于原材料成本上涨。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "multi_fact", "difficulty": "medium"}
+  },
+  {
+    "id": "rag_004",
+    "query": "新能源业务板块的表现如何？",
+    "reference_answer": "新能源业务表现强劲，收入占比首次超过50%达到52.8%，同比增长35.2%，成为公司第一大业务板块。毛利率为32.1%，虽低于传统业务但增速最快。",
+    "ground_truth_contexts": ["block_segment_001", "block_segment_002", "block_mda_002"],
+    "retrieved_contexts": ["block_segment_001", "block_revenue_002", "block_segment_002", "block_outlook_001", "block_rd_003"],
+    "prediction": "新能源业务2023年表现亮眼：收入占比首次超过50%达52.8%，同比增长35.2%，已成为公司最大收入来源。该板块毛利率为32.1%。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "multi_fact", "difficulty": "medium"}
+  },
+  {
+    "id": "rag_005",
+    "query": "公司面临哪些主要风险？",
+    "reference_answer": "公司面临三大风险：1）原材料价格波动风险（碳酸锂价格大幅波动）2）海外贸易壁垒风险（欧盟拟加征关税）3）技术路线变革风险（固态电池可能颠覆格局）。此外还有汇率风险和人才流失风险。",
+    "ground_truth_contexts": ["block_risk_001", "block_risk_002", "block_risk_003"],
+    "retrieved_contexts": ["block_risk_001", "block_risk_002", "block_mda_003", "block_cost_002", "block_outlook_003"],
+    "prediction": "主要风险包括：1. 原材料价格波动，碳酸锂价格从50万元/吨降至10万元/吨；2. 海外贸易壁垒，欧盟拟对中国电动车加征关税；3. 技术替代风险，固态电池技术可能改变行业格局。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "multi_fact", "difficulty": "medium"}
+  },
+  {
+    "id": "rag_006",
+    "query": "从收入和成本两个维度评估公司经营风险",
+    "reference_answer": "收入端：对新能源业务依赖度超50%，单一业务风险上升；海外收入约30%面临汇率和关税风险。成本端：原材料成本占比60%，碳酸锂价格波动直接影响毛利率；人工成本增长12%快于营收增速。",
+    "ground_truth_contexts": ["block_segment_001", "block_cost_001", "block_cost_002", "block_risk_001", "block_risk_003"],
+    "retrieved_contexts": ["block_cost_001", "block_risk_001", "block_revenue_001", "block_segment_001", "block_mda_001"],
+    "prediction": "收入端风险：新能源占比52.8%，业务集中度较高；海外收入约30%面临汇率波动和贸易摩擦。成本端风险：原材料占营业成本60%以上，碳酸锂价格大幅波动直接影响毛利率水平。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "complex_analysis", "difficulty": "hard"}
+  },
+  {
+    "id": "rag_007",
+    "query": "公司现金流状况如何？",
+    "reference_answer": "经营性现金流净额22.5亿元，同比增长18.3%，高于净利润增速，显示现金回收能力较强。投资性现金流支出15.8亿元，主要用于产能扩张。筹资性现金流为负3.2亿元，主要为偿还贷款。",
+    "ground_truth_contexts": ["block_cashflow_001", "block_cashflow_002"],
+    "retrieved_contexts": ["block_cashflow_001", "block_profit_001", "block_cashflow_002", "block_revenue_001", "block_cost_001"],
+    "prediction": "公司现金流健康：经营活动现金流净额22.5亿元，同比增长18.3%。投资活动现金流出15.8亿元，用于产能扩张。筹资活动现金流为-3.2亿元。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "single_fact", "difficulty": "easy"}
+  },
+  {
+    "id": "rag_008",
+    "query": "对比公司传统业务和新能源业务的盈利能力",
+    "reference_answer": "传统业务毛利率38.8%，高于新能源的32.1%，但增速仅3.5%远低于新能源的35.2%。净利润贡献上，新能源首次超过传统业务。",
+    "ground_truth_contexts": ["block_segment_001", "block_segment_002", "block_segment_003"],
+    "retrieved_contexts": ["block_segment_001", "block_segment_002", "block_profit_001", "block_revenue_002", "block_mda_002"],
+    "prediction": "传统业务毛利率38.8%高于新能源业务的32.1%，但新能源业务增速35.2%远超传统业务的3.5%。利润绝对值方面，新能源业务对整体利润的贡献已超过传统业务。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "comparison", "difficulty": "medium"}
+  },
+  {
+    "id": "rag_009",
+    "query": "公司未来发展战略是什么？",
+    "reference_answer": "公司未来战略聚焦三个方向：1）加大新能源研发投入，目标研发占比提升至10%；2）拓展海外市场，重点布局东南亚和中东；3）推进智能制造，降低制造成本15%。",
+    "ground_truth_contexts": ["block_outlook_001", "block_outlook_002", "block_outlook_003"],
+    "retrieved_contexts": ["block_outlook_001", "block_outlook_002", "block_rd_001", "block_segment_001", "block_mda_003"],
+    "prediction": "未来战略包括：1. 持续加大新能源研发，目标将研发占比提升至10%；2. 积极拓展海外市场，重点关注东南亚和中东地区；3. 推进智能制造升级，目标降低制造成本15%。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "multi_fact", "difficulty": "medium"}
+  },
+  {
+    "id": "rag_010",
+    "query": "毛利率下降的具体原因是什么？各因素影响多大？",
+    "reference_answer": "毛利率下降3.3个百分点，主要原因：1）原材料成本上涨贡献-2.1个百分点（碳酸锂等关键材料）2）产品价格竞争贡献-0.8个百分点 3）产品结构变化贡献-0.4个百分点（低毛利新能源占比上升）。",
+    "ground_truth_contexts": ["block_cost_001", "block_cost_002", "block_profit_002", "block_mda_001"],
+    "retrieved_contexts": ["block_cost_001", "block_profit_002", "block_cost_002", "block_segment_002", "block_risk_001"],
+    "prediction": "毛利率下降3.3个百分点的原因分解：原材料成本上涨是最大因素，贡献约-2.1个百分点；产品价格竞争导致-0.8个百分点；新能源业务占比上升带来的结构性影响约-0.4个百分点。",
+    "evaluators": ["rag_metrics", "llm_judge"],
+    "metadata": {"category": "complex_analysis", "difficulty": "hard"}
+  }
+]

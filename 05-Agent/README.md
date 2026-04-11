@@ -43,6 +43,9 @@
 3. [3.Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/3.Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md)
 4. [4.Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/4.Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
 5. [5.Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/5.Agent观测与评测：如何定位问题并持续优化.md)
+6. [6.Agentic RAG：当Agent遇见检索.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/6.Agentic%20RAG：当Agent遇见检索.md)
+7. [7.Agent记忆系统.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/7.Agent记忆系统.md)
+8. [8.Code Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/8.Code%20Agent.md)
 
 ## 5. 本章核心问题
 

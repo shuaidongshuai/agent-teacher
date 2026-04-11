@@ -46,16 +46,24 @@
 - [mcp-city-weather/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/mcp-city-weather/README.md)
 - [mcp-study-assistant/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/mcp-study-assistant/README.md)
 
-### L2：RAG 单链路
+### L2：RAG 单链路 / 评测工程
 
 - [智能金融投研助手-RAG/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/智能金融投研助手-RAG/README.md)
+- [10.评测Pipeline实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/10.评测Pipeline实战.md)
+- [eval-pipeline/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/eval-pipeline/README.md)
 
-### L3：单 Agent
+### L3：单 Agent / Agentic RAG
 
 - [3.LangGraph聊天Agent实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/3.LangGraph聊天Agent实战.md)
 - [agent-chat-langgraph/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-chat-langgraph/README.md)
 - [4.学习资料整理Agent实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/4.学习资料整理Agent实战.md)
 - [agent-study-react/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-study-react/README.md)
+- [7.Agentic-RAG实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/7.Agentic-RAG实战.md)
+- [agent-agentic-rag/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-agentic-rag/README.md)
+- [8.记忆增强Agent实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/8.记忆增强Agent实战.md)
+- [agent-memory-enhanced/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-memory-enhanced/README.md)
+- [9.Code-Agent实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/9.Code-Agent实战.md)
+- [agent-code-assistant/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-code-assistant/README.md)
 
 ### L4：规划执行分离 / 多 Agent
 

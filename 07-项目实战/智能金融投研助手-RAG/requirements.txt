@@ -1,20 +1,19 @@
-# 第一阶段代码默认不强依赖第三方库，方便从零开始学习。
-# 下面列的是后续逐步扩展时推荐安装的依赖。
-
-# PDF 解析
-pymupdf>=1.24.0
-pdfplumber>=0.11.0
-
-# 向量模型
+# 向量模型（embedding + reranker）
 sentence-transformers>=3.0.0
 
 # 检索与索引
 rank-bm25>=0.2.2
 faiss-cpu>=1.8.0
 
-# RAG 编排
-langgraph>=0.2.0
+# 中文分词
+jieba>=0.42.1
 
-# 评估
-ragas>=0.2.0
-trulens>=1.0.0
+# PDF 解析（可选，当前使用 sample_blocks.json）
+# pymupdf>=1.24.0
+# pdfplumber>=0.11.0
+
+# RAG 编排（可选，Agentic RAG 项目使用）
+# langgraph>=0.2.0
+
+# 评估（可选）
+# ragas>=0.2.0
