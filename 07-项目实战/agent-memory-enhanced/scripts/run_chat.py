@@ -24,19 +24,44 @@ from app.llm_client import LLMClient
 from app.memory import LongTermMemory, ShortTermMemory, WorkingMemory
 
 
+def print_working_memory(working: WorkingMemory) -> None:
+    print("工作记忆:")
+    print(f"  当前目标: {working.current_goal}")
+
+    if working.key_facts:
+        print("  关键事实:")
+        for fact in working.key_facts:
+            print(f"    - {fact}")
+    else:
+        print("  关键事实: （无）")
+
+    if working.pending_questions:
+        print("  待解决问题:")
+        for question in working.pending_questions:
+            print(f"    - {question}")
+    else:
+        print("  待解决问题: （无）")
+
+    if working.reasoning_steps:
+        print("  推理步骤:")
+        for idx, step in enumerate(working.reasoning_steps, start=1):
+            print(f"    {idx}. {step}")
+    else:
+        print("  推理步骤: （无）")
+
+
 def main():
     print("=" * 60)
-    print("       记忆增强 Agent — 交互式对话")
+    print("       记忆增强 Agent - 交互式对话")
     print("=" * 60)
 
     config = MemoryAgentConfig(project_root=project_root)
 
     if not config.openai_api_key:
         print("\n错误: 请先设置 OPENAI_API_KEY")
-        print("  export OPENAI_API_KEY=your-key")
+        print("  例如: set OPENAI_API_KEY=your-key")
         return
 
-    # 初始化组件
     llm = LLMClient(
         api_key=config.openai_api_key,
         base_url=config.openai_base_url,
@@ -57,8 +82,6 @@ def main():
     )
 
     working = WorkingMemory()
-
-    # 构建图
     graph = build_graph(llm, short_term, long_term, working)
 
     print(f"\n已加载 {len(long_term.entries)} 条长期记忆")
@@ -71,14 +94,14 @@ def main():
         try:
             user_input = input("你: ").strip()
         except (EOFError, KeyboardInterrupt):
-            print("\n再见！")
+            print("\n再见。")
             break
 
         if not user_input:
             continue
 
         if user_input == "/quit":
-            print("再见！")
+            print("再见。")
             break
 
         if user_input == "/memory":
@@ -86,9 +109,9 @@ def main():
             print(f"短期记忆: {len(short_term.messages)} 条消息")
             print(f"摘要: {short_term.summary[:200] or '（无）'}")
             print(f"长期记忆: {len(long_term.entries)} 条")
-            for i, entry in enumerate(long_term.entries[-5:]):
+            for entry in long_term.entries[-5:]:
                 print(f"  [{entry.category}] {entry.content}")
-            print(f"工作记忆: {working.current_goal}")
+            print_working_memory(working)
             print("---\n")
             continue
 
@@ -101,17 +124,20 @@ def main():
             print("记忆已清空。\n")
             continue
 
-        # 执行一轮对话
         state = run_turn(graph, user_input, state)
         turn += 1
 
         response = state.get("assistant_response", "")
         print(f"\n助手: {response}\n")
 
-        # 打印调试信息
         log = state.get("execution_log", [])
         if log:
-            print(f"  [调试] LLM调用: {state.get('llm_call_count', 0)} | 记忆: {len(long_term.entries)} 条")
+            print(
+                f"  [调试] LLM调用: {state.get('llm_call_count', 0)} | 长期记忆: {len(long_term.entries)} 条"
+            )
+            print(f"  [调试] 工作目标: {working.current_goal}")
+            print(f"  [调试] 关键事实: {len(working.key_facts)} 条")
+            print(f"  [调试] 待解决问题: {len(working.pending_questions)} 条")
 
     print(f"\n对话结束，共 {turn} 轮。")
 
