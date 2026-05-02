@@ -14,6 +14,8 @@ import json
 import sys
 from pathlib import Path
 
+from sympy import false
+
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
@@ -56,6 +58,8 @@ def main():
             api_key=config.openai_api_key,
             base_url=config.openai_base_url,
             model=config.openai_model,
+            ca_bundle=config.openai_ca_bundle,
+            ssl_verify=false,
         )
 
         short_term = ShortTermMemory(

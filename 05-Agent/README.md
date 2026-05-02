@@ -46,6 +46,7 @@
 6. [6.Agentic RAG：当Agent遇见检索.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/6.Agentic%20RAG：当Agent遇见检索.md)
 7. [7.Agent记忆系统.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/7.Agent记忆系统.md)
 8. [8.Code Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/8.Code%20Agent.md)
+9. [9.LangGraph入门：作用、优势、常用API与应用场景.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/9.LangGraph入门：作用、优势、常用API与应用场景.md)
 
 ## 5. 本章核心问题
 

@@ -53,6 +53,7 @@ class ShortTermMemory:
             f"{m['role']}: {m['content']}" for m in to_compress
         )
 
+        # 从同目录的 prompts 模块导入一个提示词模板（通常是带 {previous_summary}、{messages} 占位符的字符串）。
         from .prompts import COMPRESS_PROMPT
 
         prompt = COMPRESS_PROMPT.format(

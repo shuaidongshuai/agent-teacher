@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 import logging
+import ssl
 import urllib.request
+from pathlib import Path
 from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
@@ -16,10 +18,14 @@ class LLMClient:
         api_key: str,
         base_url: str = "https://api.openai.com/v1",
         model: str = "gpt-4o-mini",
+        ca_bundle: str = "",
+        ssl_verify: bool = True,
     ) -> None:
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.model = model
+        self.ca_bundle = ca_bundle
+        self.ssl_verify = ssl_verify
         self._call_count = 0
 
     @property
@@ -45,7 +51,9 @@ class LLMClient:
         }
         data = json.dumps(payload).encode("utf-8")
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with urllib.request.urlopen(
+            req, timeout=60, context=self._build_ssl_context()
+        ) as resp:
             result = json.loads(resp.read().decode("utf-8"))
         self._call_count += 1
         return result["choices"][0]["message"]["content"].strip()
@@ -61,3 +69,13 @@ class LLMClient:
         elif "```" in content:
             content = content.split("```")[1].split("```")[0].strip()
         return json.loads(content)
+
+    def _build_ssl_context(self) -> ssl.SSLContext:
+        if not self.ssl_verify:
+            return ssl._create_unverified_context()
+
+        if self.ca_bundle:
+            ca_path = Path(self.ca_bundle).expanduser()
+            return ssl.create_default_context(cafile=str(ca_path))
+
+        return ssl.create_default_context()

@@ -41,6 +41,8 @@ def main():
         api_key=config.openai_api_key,
         base_url=config.openai_base_url,
         model=config.openai_model,
+        ca_bundle=config.openai_ca_bundle,
+        ssl_verify=config.openai_ssl_verify,
     )
 
     short_term = ShortTermMemory(

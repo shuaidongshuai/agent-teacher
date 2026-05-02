@@ -15,6 +15,8 @@ class MemoryAgentConfig:
     openai_api_key: str = ""
     openai_base_url: str = ""
     openai_model: str = "gpt-4o-mini"
+    openai_ca_bundle: str = ""
+    openai_ssl_verify: bool = True
 
     # Embedding（用于长期记忆）
     embedding_model_name: str = "BAAI/bge-small-zh-v1.5"
@@ -39,6 +41,10 @@ class MemoryAgentConfig:
             )
         if self.openai_model == "gpt-4o-mini":
             self.openai_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        if not self.openai_ca_bundle:
+            self.openai_ca_bundle = os.getenv("OPENAI_CA_BUNDLE", "")
+        ssl_verify_env = os.getenv("OPENAI_SSL_VERIFY", "true").strip().lower()
+        self.openai_ssl_verify = ssl_verify_env not in {"0", "false", "no", "off"}
 
     @property
     def data_dir(self) -> Path:
