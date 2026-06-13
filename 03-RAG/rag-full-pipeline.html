@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG 全流程图</title>
+    <style>
+      :root {
+        --bg: #f3efe7;
+        --paper: rgba(255, 252, 246, 0.92);
+        --ink: #182028;
+        --muted: #61707f;
+        --line: rgba(24, 32, 40, 0.12);
+        --accent: #d45d31;
+        --accent-2: #1f6f78;
+        --accent-3: #b29246;
+        --accent-4: #4056a1;
+        --shadow: 0 18px 48px rgba(24, 32, 40, 0.12);
+        --radius: 24px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(212, 93, 49, 0.16), transparent 28%),
+          radial-gradient(circle at top right, rgba(31, 111, 120, 0.18), transparent 24%),
+          linear-gradient(180deg, #f7f2ea 0%, #efe8dc 100%);
+      }
+
+      .page {
+        width: min(1480px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0 56px;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, rgba(255, 252, 246, 0.94), rgba(252, 245, 234, 0.9));
+        border: 1px solid rgba(24, 32, 40, 0.08);
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        padding: 28px 30px 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -80px;
+        top: -60px;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(64, 86, 161, 0.18), transparent 68%);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(24, 32, 40, 0.06);
+        color: var(--muted);
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 16px 0 12px;
+        font-size: clamp(36px, 5vw, 58px);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+      }
+
+      .hero p {
+        margin: 0;
+        max-width: 920px;
+        color: #32404d;
+        font-size: 17px;
+        line-height: 1.75;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 18px;
+        margin-top: 22px;
+      }
+
+      .hero-card {
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(24, 32, 40, 0.08);
+        border-radius: 22px;
+        padding: 18px 18px 16px;
+      }
+
+      .hero-card h2 {
+        margin: 0 0 10px;
+        font-size: 15px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .pill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .pill {
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 14px;
+        background: rgba(24, 32, 40, 0.06);
+      }
+
+      .main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2.2fr) minmax(320px, 1fr);
+        gap: 20px;
+        margin-top: 22px;
+        align-items: start;
+      }
+
+      .board,
+      .side-panel,
+      .diagnostics,
+      .footer-note {
+        background: var(--paper);
+        border: 1px solid rgba(24, 32, 40, 0.08);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+      }
+
+      .board {
+        padding: 22px;
+      }
+
+      .board-header,
+      .side-header,
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .board-header h2,
+      .side-header h2,
+      .section-header h2 {
+        margin: 0 0 6px;
+        font-size: 24px;
+      }
+
+      .board-header p,
+      .side-header p,
+      .section-header p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: rgba(24, 32, 40, 0.05);
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .legend i {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .pipeline {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .stage {
+        position: relative;
+        border-radius: 24px;
+        padding: 16px;
+        min-height: 100%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(250, 247, 241, 0.78));
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .stage::after {
+        content: "";
+        position: absolute;
+        top: 36px;
+        right: -10px;
+        width: 20px;
+        height: 2px;
+        background: rgba(24, 32, 40, 0.18);
+      }
+
+      .stage:last-child::after {
+        display: none;
+      }
+
+      .stage-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        background: rgba(24, 32, 40, 0.06);
+      }
+
+      .stage h3 {
+        margin: 12px 0 8px;
+        font-size: 24px;
+        line-height: 1.15;
+      }
+
+      .stage p {
+        margin: 0 0 14px;
+        color: #43515e;
+        line-height: 1.65;
+        font-size: 14px;
+      }
+
+      .node-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .node {
+        width: 100%;
+        text-align: left;
+        border: 1px solid rgba(24, 32, 40, 0.1);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.76);
+        padding: 13px 14px;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      }
+
+      .node:hover,
+      .node:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(24, 32, 40, 0.12);
+        border-color: rgba(24, 32, 40, 0.2);
+        outline: none;
+      }
+
+      .node.active {
+        border-color: transparent;
+        background: linear-gradient(135deg, rgba(212, 93, 49, 0.12), rgba(212, 93, 49, 0.05));
+        box-shadow: 0 14px 32px rgba(212, 93, 49, 0.16);
+      }
+
+      .node .node-id {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        margin-right: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        background: rgba(24, 32, 40, 0.08);
+      }
+
+      .node strong {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+
+      .node span {
+        display: block;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 13px;
+      }
+
+      .control-plane {
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 22px;
+        background: linear-gradient(120deg, rgba(31, 111, 120, 0.08), rgba(64, 86, 161, 0.08));
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .control-plane h3 {
+        margin: 0 0 12px;
+        font-size: 18px;
+      }
+
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .control-card {
+        border-radius: 18px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .control-card strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .control-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 13px;
+      }
+
+      .side-panel {
+        padding: 22px;
+        position: sticky;
+        top: 16px;
+      }
+
+      .side-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(24, 32, 40, 0.06);
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .detail-title {
+        margin: 14px 0 8px;
+        font-size: 30px;
+        line-height: 1.1;
+      }
+
+      .detail-summary {
+        margin: 0 0 18px;
+        color: #354250;
+        line-height: 1.75;
+        font-size: 15px;
+      }
+
+      .detail-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .detail-card {
+        border-radius: 18px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .detail-card h3 {
+        margin: 0 0 8px;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+      }
+
+      .detail-card ul {
+        margin: 0;
+        padding-left: 18px;
+        color: #33414f;
+        line-height: 1.7;
+      }
+
+      .diagnostics {
+        margin-top: 22px;
+        padding: 22px;
+      }
+
+      .diagnostic-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .diagnostic-card {
+        border-radius: 22px;
+        padding: 16px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(249, 245, 238, 0.9));
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .diagnostic-card h3 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+
+      .diagnostic-card p {
+        margin: 0 0 10px;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .diagnostic-card ol {
+        margin: 0;
+        padding-left: 18px;
+        line-height: 1.7;
+        color: #33414f;
+      }
+
+      .footer-note {
+        margin-top: 22px;
+        padding: 18px 22px;
+      }
+
+      .execution-map {
+        margin-top: 22px;
+        padding: 22px;
+      }
+
+      .poster-map {
+        margin-top: 22px;
+        padding: 22px;
+      }
+
+      .poster-shell {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 22px;
+        background:
+          radial-gradient(circle at top left, rgba(212, 93, 49, 0.12), transparent 24%),
+          radial-gradient(circle at bottom right, rgba(64, 86, 161, 0.14), transparent 26%),
+          linear-gradient(180deg, rgba(255,255,255,0.82), rgba(247,242,234,0.92));
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .poster-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        align-items: start;
+      }
+
+      .poster-column {
+        position: relative;
+        border-radius: 24px;
+        padding: 18px;
+        min-height: 100%;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .poster-column h3 {
+        margin: 0 0 8px;
+        font-size: 24px;
+      }
+
+      .poster-column p {
+        margin: 0 0 14px;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .poster-column .poster-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(24, 32, 40, 0.06);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .poster-stack {
+        display: grid;
+        gap: 10px;
+      }
+
+      .poster-box {
+        position: relative;
+        border-radius: 18px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .poster-box strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 15px;
+      }
+
+      .poster-box span {
+        display: block;
+        color: #33414f;
+        line-height: 1.58;
+        font-size: 13px;
+      }
+
+      .poster-box::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -10px;
+        width: 2px;
+        height: 12px;
+        background: rgba(24, 32, 40, 0.14);
+        transform: translateX(-50%);
+      }
+
+      .poster-stack .poster-box:last-child::after {
+        display: none;
+      }
+
+      .poster-bridge {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 14px;
+      }
+
+      .bridge-card {
+        border-radius: 20px;
+        padding: 16px;
+        background: rgba(24, 32, 40, 0.05);
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .bridge-card h4 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+
+      .bridge-card p,
+      .bridge-card ul {
+        margin: 0;
+        color: #33414f;
+        line-height: 1.65;
+      }
+
+      .bridge-card ul {
+        padding-left: 18px;
+      }
+
+      .execution-flow {
+        display: grid;
+        gap: 18px;
+      }
+
+      .flow-lane {
+        border-radius: 24px;
+        padding: 18px;
+        border: 1px solid rgba(24, 32, 40, 0.08);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(249, 245, 238, 0.9));
+      }
+
+      .flow-lane h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+      }
+
+      .flow-lane p {
+        margin: 0 0 14px;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .flow-steps {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .flow-step {
+        position: relative;
+        min-height: 100%;
+        border-radius: 20px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.84);
+        border: 1px solid rgba(24, 32, 40, 0.08);
+      }
+
+      .flow-step::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: -10px;
+        width: 20px;
+        height: 2px;
+        background: rgba(24, 32, 40, 0.16);
+      }
+
+      .flow-step:last-child::after {
+        display: none;
+      }
+
+      .flow-step strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 15px;
+      }
+
+      .flow-step span {
+        display: block;
+        color: #33414f;
+        line-height: 1.6;
+        font-size: 13px;
+      }
+
+      .flow-note {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(24, 32, 40, 0.05);
+        color: #33414f;
+        line-height: 1.7;
+      }
+
+      .footer-note p {
+        margin: 0;
+        line-height: 1.7;
+        color: #33414f;
+      }
+
+      .accent-offline i,
+      .stage.offline .stage-tag::before {
+        background: var(--accent);
+      }
+
+      .accent-query i {
+        background: var(--accent-2);
+      }
+
+      .accent-retrieval i {
+        background: var(--accent-3);
+      }
+
+      .accent-answer i {
+        background: var(--accent-4);
+      }
+
+      .stage.offline {
+        box-shadow: inset 0 0 0 1px rgba(212, 93, 49, 0.12);
+      }
+
+      .stage.query {
+        box-shadow: inset 0 0 0 1px rgba(31, 111, 120, 0.12);
+      }
+
+      .stage.retrieval {
+        box-shadow: inset 0 0 0 1px rgba(178, 146, 70, 0.14);
+      }
+
+      .stage.answer {
+        box-shadow: inset 0 0 0 1px rgba(64, 86, 161, 0.12);
+      }
+
+      @media (max-width: 1180px) {
+        .hero-grid,
+        .main-grid,
+        .pipeline,
+        .control-grid,
+        .diagnostic-grid,
+        .flow-steps,
+        .poster-grid,
+        .poster-bridge {
+          grid-template-columns: 1fr;
+        }
+
+        .stage::after {
+          top: auto;
+          right: auto;
+          left: 50%;
+          bottom: -10px;
+          width: 2px;
+          height: 20px;
+          transform: translateX(-50%);
+        }
+
+        .flow-step::after {
+          top: auto;
+          right: auto;
+          left: 50%;
+          bottom: -10px;
+          width: 2px;
+          height: 20px;
+          transform: translateX(-50%);
+        }
+
+        .side-panel {
+          position: static;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          scroll-behavior: auto !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="hero">
+        <div class="eyebrow">RAG Teaching Map · Production View</div>
+        <h1>RAG 全流程图</h1>
+        <p>
+          这不是一条“用户提问后去向量库查一下”的简单链路，而是一个从离线知识构建、在线查询理解、召回与重排、答案生成，到评测回流与持续优化的完整系统。
+          这页的目标是让你同时看清教学逻辑和生产逻辑。
+        </p>
+        <div class="hero-grid">
+          <div class="hero-card">
+            <h2>这页重点回答什么</h2>
+            <div class="pill-list">
+              <div class="pill">离线数据为什么决定上限</div>
+              <div class="pill">查询理解为什么影响召回</div>
+              <div class="pill">为什么只召回还不够</div>
+              <div class="pill">答案差时先查哪一层</div>
+              <div class="pill">生产里必须补哪些控制面</div>
+            </div>
+          </div>
+          <div class="hero-card">
+            <h2>推荐阅读方式</h2>
+            <div class="pill-list">
+              <div class="pill">先看主流程图</div>
+              <div class="pill">再逐个点击节点</div>
+              <div class="pill">最后看底部排障路径</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="main-grid">
+        <div class="board">
+          <div class="board-header">
+            <div>
+              <h2>完整主流程</h2>
+              <p>按“离线构建 → 在线理解 → 检索排序 → 生成回流”的顺序阅读。点击任意节点，右侧会展开生产级说明。</p>
+            </div>
+            <div class="legend">
+              <span class="accent-offline"><i></i>离线数据构建</span>
+              <span class="accent-query"><i></i>在线查询理解</span>
+              <span class="accent-retrieval"><i></i>检索与重排</span>
+              <span class="accent-answer"><i></i>生成与评测回流</span>
+            </div>
+          </div>
+
+          <div class="pipeline">
+            <section class="stage offline">
+              <div class="stage-tag">Stage 1</div>
+              <h3>离线数据构建</h3>
+              <p>目标是把原始资料变成结构化、可索引、可追踪、可更新的知识单元。这一层决定系统上限。</p>
+              <div class="node-list">
+                <button class="node active" data-node="ingestion">
+                  <strong><span class="node-id">01</span>数据接入与版本管理</strong>
+                  <span>接入 PDF、Word、网页、数据库、FAQ、工单与内部文档，并记录来源、版本、权限和更新时间。</span>
+                </button>
+                <button class="node" data-node="parsing">
+                  <strong><span class="node-id">02</span>解析、清洗与结构恢复</strong>
+                  <span>处理页眉页脚、乱码、表格、标题层级、章节结构、扫描噪声和重复文档。</span>
+                </button>
+                <button class="node" data-node="chunking">
+                  <strong><span class="node-id">03</span>切分、元数据补充与知识单元化</strong>
+                  <span>把长文档切成可检索 chunk，并补标题、主题、来源、部门、时间、权限等元数据。</span>
+                </button>
+                <button class="node" data-node="embedding">
+                  <strong><span class="node-id">04</span>Embedding、索引写入与离线质检</strong>
+                  <span>生成向量、写入索引、建立 BM25/标签索引，并对样本做召回质检与回灌。</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="stage query">
+              <div class="stage-tag">Stage 2</div>
+              <h3>在线查询理解</h3>
+              <p>目标是把“用户原话”变成“检索系统更容易工作的输入”，减少口语、省略、简称和歧义带来的损失。</p>
+              <div class="node-list">
+                <button class="node" data-node="query-understanding">
+                  <strong><span class="node-id">05</span>问题理解与实体抽取</strong>
+                  <span>识别产品名、制度名、等级、时间范围、地区、版本、组织实体和显式约束。</span>
+                </button>
+                <button class="node" data-node="query-rewrite">
+                  <strong><span class="node-id">06</span>Query 改写与多路查询生成</strong>
+                  <span>把口语问题改成标准检索语句，必要时生成多个检索 query。</span>
+                </button>
+                <button class="node" data-node="routing">
+                  <strong><span class="node-id">07</span>检索路由与过滤策略</strong>
+                  <span>决定查哪个知识库、走 BM25 还是向量检索、是否加标签过滤或权限过滤。</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="stage retrieval">
+              <div class="stage-tag">Stage 3</div>
+              <h3>检索与重排</h3>
+              <p>目标不是“找到一些相关内容”，而是把最该给模型看的证据稳定放到前面，并控制噪声与上下文预算。</p>
+              <div class="node-list">
+                <button class="node" data-node="retrieval">
+                  <strong><span class="node-id">08</span>多路召回</strong>
+                  <span>组合 BM25、向量检索、标签过滤、混合检索，先确保覆盖率和召回空间。</span>
+                </button>
+                <button class="node" data-node="rerank">
+                  <strong><span class="node-id">09</span>重排序与去重聚合</strong>
+                  <span>重排候选 chunk，去掉重复片段、旧版本干扰和仅关键词匹配但不答题的内容。</span>
+                </button>
+                <button class="node" data-node="context-build">
+                  <strong><span class="node-id">10</span>上下文组装</strong>
+                  <span>把证据按答案任务组织成 prompt 上下文，控制 token、引用结构与证据覆盖。</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="stage answer">
+              <div class="stage-tag">Stage 4</div>
+              <h3>生成、评测与回流</h3>
+              <p>最后不只是回答用户，还要控制引用、拒答、日志、评测与反馈闭环，否则系统很难持续优化。</p>
+              <div class="node-list">
+                <button class="node" data-node="generation">
+                  <strong><span class="node-id">11</span>答案生成与引用约束</strong>
+                  <span>要求模型仅基于证据回答，给出处、结论边界、缺失信息说明与拒答策略。</span>
+                </button>
+                <button class="node" data-node="guardrails">
+                  <strong><span class="node-id">12</span>答案后处理与安全检查</strong>
+                  <span>检查是否幻觉、是否越权、是否缺引用、是否答非所问，必要时回退或人工兜底。</span>
+                </button>
+                <button class="node" data-node="feedback">
+                  <strong><span class="node-id">13</span>日志、评测与数据回流</strong>
+                  <span>沉淀失败样本，回流到离线数据治理、查询理解、重排和 prompt 优化中。</span>
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <div class="control-plane">
+            <h3>生产级控制面：不直接回答用户，但决定系统是否敢上线</h3>
+            <div class="control-grid">
+              <div class="control-card">
+                <strong>权限与版本</strong>
+                <p>文档权限过滤、版本选择、废弃内容屏蔽、来源可追踪，是企业 RAG 必须补的底层能力。</p>
+              </div>
+              <div class="control-card">
+                <strong>观测与指标</strong>
+                <p>至少看召回率、重排命中、引用覆盖、答案正确率、延迟、成本、失败类型与人工接管率。</p>
+              </div>
+              <div class="control-card">
+                <strong>成本与时延治理</strong>
+                <p>控制 query 改写次数、召回规模、重排深度、上下文长度和模型选择，否则系统会又慢又贵。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <div class="side-header">
+            <div>
+              <div class="side-kicker">Node Detail</div>
+              <h2>节点详解</h2>
+              <p>默认从第一步开始。你可以按讲课顺序逐个点，也可以从“你当前最常出问题的层”倒着查。</p>
+            </div>
+          </div>
+
+          <div id="detail-pane">
+            <h3 class="detail-title">数据接入与版本管理</h3>
+            <p class="detail-summary">
+              目标是把分散在不同系统里的原始资料稳定接入，并明确每份知识的来源、归属、权限、版本与更新时间。
+              企业里最常见的问题不是“没有资料”，而是资料进来之后无法追踪和治理。
+            </p>
+            <div class="detail-grid">
+              <div class="detail-card">
+                <h3>职责</h3>
+                <ul id="detail-responsibility"></ul>
+              </div>
+              <div class="detail-card">
+                <h3>输入 / 输出</h3>
+                <ul id="detail-io"></ul>
+              </div>
+              <div class="detail-card">
+                <h3>常见问题</h3>
+                <ul id="detail-risks"></ul>
+              </div>
+              <div class="detail-card">
+                <h3>生产注意点</h3>
+                <ul id="detail-production"></ul>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="poster-map diagnostics">
+        <div class="section-header">
+          <div>
+            <h2>超完整单图海报</h2>
+            <p>这是一张适合截图、讲课和全局复习的压缩总图。它把离线知识构建、在线问答执行、生产治理闭环三条链路收拢到一页里。</p>
+          </div>
+        </div>
+
+        <div class="poster-shell">
+          <div class="poster-grid">
+            <article class="poster-column">
+              <div class="poster-tag">Column A · Offline</div>
+              <h3>离线知识构建</h3>
+              <p>决定系统上限。目标是把原始资料变成可检索、可追踪、可更新、可过滤的知识对象。</p>
+              <div class="poster-stack">
+                <div class="poster-box">
+                  <strong>1. 数据接入</strong>
+                  <span>接入 PDF、Word、网页、数据库、FAQ、工单、Wiki，并保留来源、权限、版本和更新时间。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>2. 解析与清洗</strong>
+                  <span>做 OCR、去噪、去重复、结构恢复，解决页眉页脚、表格、标题层级和扫描误差问题。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>3. 切分与元数据补充</strong>
+                  <span>把文档切成 chunk，并补上标题、主题、部门、时间、实体、权限、版本等元数据。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>4. Embedding 与多索引落库</strong>
+                  <span>生成向量，写入向量数据库，并建立 BM25、标签索引、过滤索引、结构化索引。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>5. 离线质检与发布</strong>
+                  <span>用样本 query 验证召回效果、索引正确性和知识覆盖后，再灰度发布索引版本。</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="poster-column">
+              <div class="poster-tag">Column B · Online</div>
+              <h3>在线问答执行</h3>
+              <p>决定用户每次提问时系统怎么工作。目标是把用户问题转成正确证据，再把证据稳定交给大模型。</p>
+              <div class="poster-stack">
+                <div class="poster-box">
+                  <strong>6. 用户查询进入</strong>
+                  <span>拿到原始 query，并结合多轮上下文识别当前真实意图。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>7. Query 理解与改写</strong>
+                  <span>做实体抽取、条件补全、别名识别、时间范围识别，并生成一个或多个检索 query。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>8. 检索路由与初步召回</strong>
+                  <span>决定查哪个知识库、走什么索引，再从向量库、BM25、标签过滤里召回候选结果。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>9. 重排、去重与证据筛选</strong>
+                  <span>对召回候选做 rerank，过滤旧版本、重复块、关键词相关但不真正答题的噪声内容。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>10. 上下文组装与调用 LLM</strong>
+                  <span>把高价值证据组织进 prompt，上下文长度可控，然后调用大模型基于证据生成答案。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>11. 答案校验与结果返回</strong>
+                  <span>检查引用、幻觉、越权、答非所问和证据不足，必要时拒答、降级或转人工。</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="poster-column">
+              <div class="poster-tag">Column C · Governance</div>
+              <h3>生产治理闭环</h3>
+              <p>决定系统能不能稳定跑、敢不敢上线、是否会持续变好。没有这条链路，系统通常只能停留在 Demo。</p>
+              <div class="poster-stack">
+                <div class="poster-box">
+                  <strong>12. 增量更新与删除同步</strong>
+                  <span>知识库变化后及时更新索引，并同步删除废弃、失效和越权内容。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>13. 权限过滤与版本治理</strong>
+                  <span>在线检索时按用户身份过滤，并优先保留最新、有效、可访问的知识版本。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>14. 缓存、性能与成本控制</strong>
+                  <span>对高频 query、热文档、Embedding、重排结果和答案做缓存，控制时延和费用。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>15. 降级、兜底与人工接管</strong>
+                  <span>当向量库、重排、模型异常时，支持 BM25 降级、FAQ 兜底、拒答和人工接管。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>16. 监控、评测与样本沉淀</strong>
+                  <span>记录召回、重排、答案、引用、延迟、成本、失败类型，并把线上问题沉淀成评测集。</span>
+                </div>
+                <div class="poster-box">
+                  <strong>17. AB 实验与策略优化</strong>
+                  <span>灰度验证新索引、新 Embedding、新 rerank、新 Prompt 与新模型，再决定全量发布。</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="poster-bridge">
+            <div class="bridge-card">
+              <h4>一张图里最关键的 3 个判断</h4>
+              <ul>
+                <li>如果“找不到”，先查离线知识构建和 Query 理解，而不是先怪大模型。</li>
+                <li>如果“找到了但答不好”，重点查重排、上下文组装和答案约束。</li>
+                <li>如果“系统能跑但不稳定”，重点查权限、版本、缓存、降级、评测和回流机制。</li>
+              </ul>
+            </div>
+            <div class="bridge-card">
+              <h4>一句话总纲</h4>
+              <p>
+                生产级 RAG = `离线知识准备` + `在线检索问答` + `治理闭环持续优化`。
+                三条链路缺一条，系统都很难稳定。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="diagnostics">
+        <div class="section-header">
+          <div>
+            <h2>问题排查路径</h2>
+            <p>教学里最有价值的不是“背定义”，而是知道不同故障该先查哪层。下面给出一个生产里常用的初始排查顺序。</p>
+          </div>
+        </div>
+        <div class="diagnostic-grid">
+          <article class="diagnostic-card">
+            <h3>召回差</h3>
+            <p>系统找不到该有的内容，优先怀疑离线链路和查询理解，不要一上来怪生成模型。</p>
+            <ol>
+              <li>先查文档是否真的入库、是否版本正确</li>
+              <li>再查切分、标题和元数据是否破坏了语义</li>
+              <li>再查 query 改写、实体提取和路由是否偏了</li>
+              <li>最后再看 Embedding 与召回策略</li>
+            </ol>
+          </article>
+          <article class="diagnostic-card">
+            <h3>答案差</h3>
+            <p>找到了内容但答不好，通常不只是生成问题，往往是给模型的证据排序和组装就出了偏差。</p>
+            <ol>
+              <li>先看前几条证据是否真的最相关</li>
+              <li>再看是否把旧版本、重复块或噪声送进了上下文</li>
+              <li>再看 prompt 是否约束了引用、拒答和答案边界</li>
+              <li>最后再评估生成模型能力</li>
+            </ol>
+          </article>
+          <article class="diagnostic-card">
+            <h3>延迟高</h3>
+            <p>RAG 慢通常是链路太长，不是某一个模块单独慢。要按步骤拆开看。</p>
+            <ol>
+              <li>看 query 改写是否过多轮</li>
+              <li>看召回候选是不是拉得太大</li>
+              <li>看重排深度和模型是不是过重</li>
+              <li>看上下文是否过长、生成模型是否过大</li>
+            </ol>
+          </article>
+          <article class="diagnostic-card">
+            <h3>成本高</h3>
+            <p>成本问题往往和时延问题一体两面，常见根因是“每层都想做得更保险，最后所有层都过重”。</p>
+            <ol>
+              <li>减少不必要的 query 改写和多路召回</li>
+              <li>控制重排数量和上下文 token</li>
+              <li>按任务复杂度分层选模型</li>
+              <li>把高频失败样本做成离线评测，避免线上反复试错</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <section class="execution-map diagnostics">
+        <div class="section-header">
+          <div>
+            <h2>执行链路流程图</h2>
+            <p>这张图更贴近“系统到底怎么跑起来”。它把你提到的关键步骤串成一条更线性的执行链，适合讲实现、讲项目、讲生产落地。</p>
+          </div>
+        </div>
+
+        <div class="execution-flow">
+          <article class="flow-lane">
+            <h3>离线准备链路：把原始数据变成可检索知识</h3>
+            <p>离线链路回答的是：知识从哪里来，怎样清洗，怎样切分，怎样进入向量数据库与其他索引系统。</p>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <strong>1. 原始数据接入</strong>
+                <span>接入 PDF、Word、网页、数据库、FAQ、工单、Wiki，并保留来源、版本、权限信息。</span>
+              </div>
+              <div class="flow-step">
+                <strong>2. 数据清洗与解析</strong>
+                <span>去除噪声，恢复标题层级、表格结构、正文段落和附件关系。</span>
+              </div>
+              <div class="flow-step">
+                <strong>3. 文本切分与元数据补充</strong>
+                <span>把文档切成 chunk，并补标题、时间、部门、主题、实体、权限等元数据。</span>
+              </div>
+              <div class="flow-step">
+                <strong>4. 向量化与索引建立</strong>
+                <span>生成 Embedding，写入向量数据库，同时建立 BM25、标签、过滤索引。</span>
+              </div>
+              <div class="flow-step">
+                <strong>5. 离线质检与发布</strong>
+                <span>用样本 query 验证召回效果，确认可用后再发布索引版本到线上。</span>
+              </div>
+            </div>
+            <div class="flow-note">
+              关键理解：如果这条链路做不好，后面的 Query 改写、召回、重排和生成都会被拖累。生产里很多“模型回答不准”的问题，本质上其实是离线知识准备阶段埋下的。
+            </div>
+          </article>
+
+          <article class="flow-lane">
+            <h3>在线问答链路：从用户查询到大模型回答</h3>
+            <p>在线链路回答的是：用户一提问，系统如何理解问题、改写 query、检索召回、重排证据，并最终调用大模型生成答案。</p>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <strong>6. 用户查询进入系统</strong>
+                <span>拿到用户原始问题，并结合多轮上下文判断这次到底在问什么。</span>
+              </div>
+              <div class="flow-step">
+                <strong>7. Query 理解与改写</strong>
+                <span>抽取实体、时间、版本、过滤条件，把口语问题改写成更适合检索的 query，必要时生成多路 query。</span>
+              </div>
+              <div class="flow-step">
+                <strong>8. 检索与初步召回</strong>
+                <span>从向量数据库、BM25 索引、标签过滤中召回 Top K 候选 chunk。</span>
+              </div>
+              <div class="flow-step">
+                <strong>9. 重排与证据筛选</strong>
+                <span>对候选结果做 rerank，去重、去旧版本、去噪声，把最相关证据排到前面。</span>
+              </div>
+              <div class="flow-step">
+                <strong>10. 上下文组装</strong>
+                <span>把高价值 chunk 组织成 prompt 上下文，控制 token 长度、引用结构和证据覆盖。</span>
+              </div>
+            </div>
+            <div class="flow-steps" style="margin-top: 12px;">
+              <div class="flow-step">
+                <strong>11. 调用大模型生成答案</strong>
+                <span>把用户问题和证据上下文一起交给 LLM，要求基于证据回答并给出处。</span>
+              </div>
+              <div class="flow-step">
+                <strong>12. 答案校验与安全检查</strong>
+                <span>检查是否幻觉、是否越权、是否缺引用、是否答非所问，必要时拒答或回退。</span>
+              </div>
+              <div class="flow-step">
+                <strong>13. 返回结果给用户</strong>
+                <span>输出最终答案、引用来源、边界说明，必要时说明证据不足或建议继续追问。</span>
+              </div>
+              <div class="flow-step">
+                <strong>14. 记录日志与用户反馈</strong>
+                <span>记录 query、改写、召回、重排、答案和用户反馈，为后续评测和优化提供样本。</span>
+              </div>
+              <div class="flow-step">
+                <strong>15. 回流优化</strong>
+                <span>把失败案例回流到离线数据清洗、切分、检索、重排、Prompt 和模型选择中。</span>
+              </div>
+            </div>
+            <div class="flow-note">
+              关键理解：线上链路不是“查一下向量库然后问一下模型”这么简单，而是一个包含 Query 改写、检索策略、召回规模、重排深度、上下文组装和答案校验的多阶段系统。
+            </div>
+          </article>
+
+          <article class="flow-lane">
+            <h3>生产治理链路：真正决定系统能不能长期稳定运行的流程</h3>
+            <p>生产级 RAG 不只是“能答出来”，还必须保证知识新鲜、权限正确、性能可控、问题可定位、效果可持续优化。</p>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <strong>16. 增量更新与删除同步</strong>
+                <span>文档新增、修改、下线后，离线链路要及时增量更新索引，并同步删除废弃内容。</span>
+              </div>
+              <div class="flow-step">
+                <strong>17. 权限过滤与版本治理</strong>
+                <span>在线检索时按用户身份、部门、角色过滤文档，并优先使用最新有效版本。</span>
+              </div>
+              <div class="flow-step">
+                <strong>18. 缓存与性能优化</strong>
+                <span>对高频 query、热文档、Embedding、重排结果和答案做分层缓存，控制时延和成本。</span>
+              </div>
+              <div class="flow-step">
+                <strong>19. 降级与兜底策略</strong>
+                <span>向量库异常、重排超时、模型失败时，要支持 BM25 降级、FAQ 兜底、拒答或人工接管。</span>
+              </div>
+              <div class="flow-step">
+                <strong>20. 线上监控与告警</strong>
+                <span>持续监控召回率、空召回率、答案正确率、引用覆盖率、延迟、成本和错误类型。</span>
+              </div>
+            </div>
+            <div class="flow-steps" style="margin-top: 12px;">
+              <div class="flow-step">
+                <strong>21. 失败样本沉淀</strong>
+                <span>把答错、漏答、慢答、越权、误引等问题沉淀成结构化案例，而不是只靠人工记忆。</span>
+              </div>
+              <div class="flow-step">
+                <strong>22. 离线评测与回归测试</strong>
+                <span>定期用评测集检查数据更新、检索策略、重排模型、Prompt 和大模型切换后的效果变化。</span>
+              </div>
+              <div class="flow-step">
+                <strong>23. AB 实验与灰度发布</strong>
+                <span>新 Embedding、新重排模型、新 Prompt 或新索引不要直接全量发布，要先灰度验证。</span>
+              </div>
+              <div class="flow-step">
+                <strong>24. 人工反馈回流</strong>
+                <span>把用户追问、人工修正、客服反馈回流到知识库和评测集中，持续提升效果。</span>
+              </div>
+              <div class="flow-step">
+                <strong>25. 策略持续优化</strong>
+                <span>根据反馈决定优先改数据、改 Query 理解、改检索、改重排、改 Prompt，还是换模型。</span>
+              </div>
+            </div>
+            <div class="flow-note">
+              关键理解：生产级 RAG 至少包含三条并行逻辑。第一条是离线知识构建，第二条是在线问答执行，第三条是治理与运维闭环。没有第三条，系统通常只能做 Demo，很难长期稳定上线。
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          使用建议：讲课时先按 4 个大阶段顺着讲，再挑 2 到 3 个最常见故障倒着查。这样学习者不会只记住“RAG 有哪些模块”，而是会真正建立“问题落在哪层、应该先改哪里”的工程判断。
+        </p>
+      </section>
+    </div>
+
+    <script>
+      const nodeData = {
+        ingestion: {
+          title: "数据接入与版本管理",
+          summary:
+            "目标是把分散在不同系统里的原始资料稳定接入，并明确每份知识的来源、归属、权限、版本与更新时间。企业里最常见的问题不是“没有资料”，而是资料进来之后无法追踪和治理。",
+          responsibility: [
+            "接入 PDF、Word、网页、数据库、FAQ、客服工单、内部 Wiki 等异构数据源",
+            "给每份文档建立来源、作者、部门、时间、版本、权限标识",
+            "处理增量同步、删除同步、版本替换和归档策略"
+          ],
+          io: [
+            "输入：原始文件、页面、表格、数据库记录、业务系统导出内容",
+            "输出：可追踪的原始文档对象，以及版本、权限、来源等基础元数据"
+          ],
+          risks: [
+            "同一份制度有多个版本，但系统无法判断哪个是最新版本",
+            "权限信息丢失，导致后续回答越权",
+            "文档重复导入，后面重排和生成阶段被旧版本污染"
+          ],
+          production: [
+            "必须把权限和版本当成一等公民，而不是后面再补",
+            "离线链路要支持增量更新和失败重试",
+            "尽量保留原始文档 ID，方便线上问题回溯到源头"
+          ]
+        },
+        parsing: {
+          title: "解析、清洗与结构恢复",
+          summary:
+            "把原始文档变成可读文本，并尽量恢复标题层级、段落边界、表格结构和附件关系。这一步做不好，后面召回和生成会被持续拖累。",
+          responsibility: [
+            "做 OCR 或解析 PDF、Word、HTML 等格式",
+            "去除页眉页脚、目录噪声、分页符、乱码、重复段落",
+            "恢复章节标题、列表、表格和正文之间的结构关系"
+          ],
+          io: [
+            "输入：原始文档对象",
+            "输出：清洗后的结构化文本、章节信息、表格信息和版面关系"
+          ],
+          risks: [
+            "扫描件识别质量差，专有名词被 OCR 误识别",
+            "标题层级丢失，导致后续切分没有语义边界",
+            "表格被拉平成噪声文本，关键信息无法检索"
+          ],
+          production: [
+            "复杂 PDF 和表格通常需要专门解析策略，不能只靠通用抽文本",
+            "保留标题路径和段落位置信息，对后续元数据很有帮助",
+            "需要抽样质检，不要默认解析器输出就是正确知识"
+          ]
+        },
+        chunking: {
+          title: "切分、元数据补充与知识单元化",
+          summary:
+            "把长文档切成既足够短、又不丢上下文的 chunk，并补上帮助检索和过滤的元数据。这一步是“文档”到“检索对象”的关键转换。",
+          responsibility: [
+            "按标题、段落、语义边界或业务规则切分内容",
+            "为 chunk 补标题、主题、部门、时间、实体、文档类型等元数据",
+            "设计 overlap、chunk size 和特殊结构（表格、FAQ、制度条款）的处理策略"
+          ],
+          io: [
+            "输入：清洗后的结构化文档",
+            "输出：可检索 chunk 及其完整元数据"
+          ],
+          risks: [
+            "切得太碎，语义断裂，召回内容看似相关但无法直接回答",
+            "切得太大，召回精度下降且浪费上下文预算",
+            "元数据缺失，导致标签过滤和权限过滤做不准"
+          ],
+          production: [
+            "不同类型文档要允许不同切分策略，不要全库一刀切",
+            "把 chunk 当成产品对象治理，而不是临时文本块",
+            "元数据质量常常比换 Embedding 更能提升效果"
+          ]
+        },
+        embedding: {
+          title: "Embedding、索引写入与离线质检",
+          summary:
+            "把 chunk 转成向量和多种索引结构，并在离线阶段先做基础召回验证。真正稳定的 RAG 不会把所有问题留到线上暴露。",
+          responsibility: [
+            "生成 Embedding，写入向量库、关键词索引、标签索引或混合索引",
+            "设计多模型、多索引、多字段的写入方式",
+            "用样本 query 做离线召回评估，提前发现知识缺失或索引异常"
+          ],
+          io: [
+            "输入：chunk 与元数据",
+            "输出：向量索引、关键词索引、过滤索引、离线评测结果"
+          ],
+          risks: [
+            "索引写入成功，但向量和元数据不一致",
+            "只看 Embedding 排行榜，不看自己场景的召回表现",
+            "上线前没有离线召回质检，问题全在生产暴露"
+          ],
+          production: [
+            "Embedding 选型要结合语言、领域、成本、延迟和部署约束",
+            "要保留索引版本号，支持回滚和 AB 测试",
+            "尽量建立最小离线评测集，先回答“能不能找出来”"
+          ]
+        },
+        "query-understanding": {
+          title: "问题理解与实体抽取",
+          summary:
+            "用户自然语言问题常常不适合直接检索。实体抽取和条件识别的目标，是把口语、省略、简称和上下文依赖拆成系统可处理的结构信号。",
+          responsibility: [
+            "抽取产品名、部门、职级、地区、时间、版本、政策名等实体",
+            "识别问句里的约束条件、范围条件、排序条件和上下文指代",
+            "为后续 query 改写和检索路由提供结构化信号"
+          ],
+          io: [
+            "输入：用户原始问题和对话上下文",
+            "输出：结构化实体、条件、意图、上下文补全线索"
+          ],
+          risks: [
+            "简称和别名没有识别出来，导致检索方向从第一步就偏了",
+            "时间范围和版本约束丢失，找到的内容答非所问",
+            "多轮对话里的代词没有消解，系统不知道“这个政策”指什么"
+          ],
+          production: [
+            "企业 RAG 通常要维护术语表、别名字典或实体库",
+            "实体抽取不是为了好看，而是为了提升检索稳定性",
+            "要记录抽取结果，线上排障时非常关键"
+          ]
+        },
+        "query-rewrite": {
+          title: "Query 改写与多路查询生成",
+          summary:
+            "把用户原话改成更适合检索的表达，必要时同时生成多个 query，从不同角度提高召回覆盖率。",
+          responsibility: [
+            "把口语化问题标准化成适合检索的查询文本",
+            "做多 query 生成，例如原问题、实体增强版、关键词版、限定条件版",
+            "平衡 recall 提升和延迟、成本之间的关系"
+          ],
+          io: [
+            "输入：原始问题、抽取实体、上下文信息",
+            "输出：一个或多个更适合检索的 query"
+          ],
+          risks: [
+            "改写过度，偏离了用户真实问题",
+            "多 query 太多，召回量暴涨，导致成本和噪声都变高",
+            "不同 query 之间高度重复，但系统没有去重"
+          ],
+          production: [
+            "要对 query 改写设置轮数和数量上限",
+            "适合对口语、简称、多条件问句做有限增强，不是无限扩写",
+            "改写效果要配合召回评测一起看，不能只看语言通顺度"
+          ]
+        },
+        routing: {
+          title: "检索路由与过滤策略",
+          summary:
+            "决定“去哪里查、怎么查、加什么过滤”。这一步本质上是在压缩无效搜索空间，提高检索精度和系统效率。",
+          responsibility: [
+            "根据问题类型选择知识库、索引和检索策略",
+            "决定是否启用权限过滤、部门过滤、时间过滤、版本过滤",
+            "区分 FAQ 型、制度型、产品型、数据型问题的不同处理路径"
+          ],
+          io: [
+            "输入：结构化 query、实体、问题类型",
+            "输出：检索计划，包括索引选择、过滤条件和召回参数"
+          ],
+          risks: [
+            "问题本应查制度库，却被路由到 FAQ 库",
+            "过滤条件过严，直接把正确答案过滤没了",
+            "所有问题都走同一路径，导致系统对复杂问题不稳"
+          ],
+          production: [
+            "多知识库场景必须有明确路由策略",
+            "路由本身也要进入评测集，不只是看最终答案",
+            "过滤条件要可解释、可观测，避免黑箱误杀"
+          ]
+        },
+        retrieval: {
+          title: "多路召回",
+          summary:
+            "召回阶段的目标是先覆盖尽可能正确的候选，而不是直接保证第一名最对。它更像海选，而不是精排。",
+          responsibility: [
+            "组合 BM25、向量检索、标签检索、结构化过滤和混合检索",
+            "控制 top-k、相似度阈值、不同召回通道的融合方式",
+            "在召回覆盖率和噪声之间做平衡"
+          ],
+          io: [
+            "输入：检索 query、过滤条件、索引策略",
+            "输出：一批候选 chunk"
+          ],
+          risks: [
+            "top-k 太小，根本没把正确答案找出来",
+            "top-k 太大，候选里噪声太多，后面重排成本高",
+            "只用单一召回策略，导致对某类问题系统性失效"
+          ],
+          production: [
+            "召回层关注 recall，不要把精排压力都压在这一层",
+            "混合检索常常比单纯向量检索更稳",
+            "要持续观察不同召回通道对各类问题的贡献"
+          ]
+        },
+        rerank: {
+          title: "重排序与去重聚合",
+          summary:
+            "把召回来的候选重新按真实答题相关度排序，并过滤重复块、旧版本和仅关键词相关但不真正回答问题的内容。",
+          responsibility: [
+            "对 query 和候选 chunk 做更精细的相关度判断",
+            "去重、合并相邻片段、优先保留高价值证据",
+            "把最该给模型看的前几条内容稳定排到前面"
+          ],
+          io: [
+            "输入：候选 chunk 集合",
+            "输出：重排后的高质量证据列表"
+          ],
+          risks: [
+            "正确答案其实召回到了，但没排到前面",
+            "旧版本和新版本同时存在，模型被旧证据误导",
+            "重复片段太多，浪费上下文窗口"
+          ],
+          production: [
+            "重排序通常直接决定最终答案质量",
+            "重排数量不能无限大，要权衡时延和收益",
+            "要把重排前后差异纳入评测，而不是只看最终生成"
+          ]
+        },
+        "context-build": {
+          title: "上下文组装",
+          summary:
+            "把证据组织成模型真正可用的上下文，而不是把若干 chunk 生硬拼接起来。好的上下文组装，会显著降低模型误读证据的概率。",
+          responsibility: [
+            "选择进入 prompt 的证据数量、顺序、格式和引用方式",
+            "把表格、条款、FAQ、摘要等不同形态内容合理组织",
+            "控制 token 长度，避免把模型注意力稀释"
+          ],
+          io: [
+            "输入：重排后的证据列表",
+            "输出：供生成模型使用的结构化上下文"
+          ],
+          risks: [
+            "最相关证据被埋在上下文后面，模型没真正关注到",
+            "上下文太长、太散，导致答案漂移",
+            "引用结构不清晰，生成后很难对齐出处"
+          ],
+          production: [
+            "上下文组装是 RAG 里最常被低估的一层",
+            "不同任务适合不同组装模板，例如问答、总结、对比、抽取",
+            "最好明确给模型输出格式和引用规则"
+          ]
+        },
+        generation: {
+          title: "答案生成与引用约束",
+          summary:
+            "这一层的目标不是“让模型自由发挥”，而是让它基于证据回答，并在证据不足时能明确说明边界、给出处、必要时拒答。",
+          responsibility: [
+            "根据证据生成最终答案、摘要、对比结论或结构化输出",
+            "要求回答带引用、带出处、带不确定性说明",
+            "控制模型不要越过证据做无根据扩写"
+          ],
+          io: [
+            "输入：用户问题与已组装好的上下文证据",
+            "输出：最终答案、引用、置信说明或拒答结果"
+          ],
+          risks: [
+            "证据不足时模型仍然硬答，造成幻觉",
+            "答案看起来流畅，但引用并不支持结论",
+            "证据是正确的，但 prompt 让模型总结方向错了"
+          ],
+          production: [
+            "要明确告诉模型只能基于证据回答",
+            "不同问题类型应使用不同回答模板",
+            "引用要求最好是系统级约束，而不是临时提示"
+          ]
+        },
+        guardrails: {
+          title: "答案后处理与安全检查",
+          summary:
+            "模型生成完并不代表系统工作完成。生产环境需要补引用校验、权限检查、风险词检查、拒答触发和人工兜底逻辑。",
+          responsibility: [
+            "检查答案是否缺引用、是否越权、是否答非所问",
+            "对高风险回答做额外校验或人工审核",
+            "在置信度不足或证据冲突时触发拒答、回退或补检索"
+          ],
+          io: [
+            "输入：模型生成答案与引用",
+            "输出：可交付答案、拒答结果、人工兜底请求或重试信号"
+          ],
+          risks: [
+            "明明证据不足，但系统还是把答案直接放给用户",
+            "模型引用格式正确，但内容其实越权或不合规",
+            "没有后处理层，导致高风险业务场景不敢上线"
+          ],
+          production: [
+            "这层是生产系统敢不敢上线的关键之一",
+            "要按业务风险设计不同强度的 guardrail",
+            "别把所有问题都寄希望于 prompt 自觉"
+          ]
+        },
+        feedback: {
+          title: "日志、评测与数据回流",
+          summary:
+            "真正的 RAG 优化不是一轮调参，而是把线上问题沉淀成可复现样本，再回流到离线构建、查询理解、检索和生成链路中。",
+          responsibility: [
+            "记录 query、路由、召回、重排、上下文、答案、引用和用户反馈",
+            "把失败样本写入离线评测集，建立持续优化闭环",
+            "决定应该改数据、改查询理解、改检索、改重排还是改生成"
+          ],
+          io: [
+            "输入：线上运行日志、用户反馈、人工复核结果",
+            "输出：评测样本、优化 backlog、数据回灌与策略更新"
+          ],
+          risks: [
+            "系统效果差，但团队只会凭感觉调 prompt",
+            "线上问题修一次就结束，没有沉淀成评测样本",
+            "没有链路日志，根本看不出问题落在哪层"
+          ],
+          production: [
+            "没有评测回流，RAG 很难长期稳定变好",
+            "至少要能回答：这次为什么错、哪层错、改动后有没有变好",
+            "失败样本比成功样本更有优化价值"
+          ]
+        }
+      };
+
+      const nodes = document.querySelectorAll(".node");
+      const paneTitle = document.querySelector(".detail-title");
+      const paneSummary = document.querySelector(".detail-summary");
+      const paneResponsibility = document.querySelector("#detail-responsibility");
+      const paneIo = document.querySelector("#detail-io");
+      const paneRisks = document.querySelector("#detail-risks");
+      const paneProduction = document.querySelector("#detail-production");
+
+      function renderList(target, items) {
+        target.innerHTML = "";
+        items.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          target.appendChild(li);
+        });
+      }
+
+      function showNode(nodeKey) {
+        const data = nodeData[nodeKey];
+        if (!data) return;
+
+        paneTitle.textContent = data.title;
+        paneSummary.textContent = data.summary;
+        renderList(paneResponsibility, data.responsibility);
+        renderList(paneIo, data.io);
+        renderList(paneRisks, data.risks);
+        renderList(paneProduction, data.production);
+
+        nodes.forEach((node) => {
+          node.classList.toggle("active", node.dataset.node === nodeKey);
+        });
+      }
+
+      nodes.forEach((node) => {
+        node.addEventListener("click", () => showNode(node.dataset.node));
+      });
+
+      showNode("ingestion");
+    </script>
+  </body>
+</html>

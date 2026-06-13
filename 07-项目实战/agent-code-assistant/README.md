@@ -85,5 +85,5 @@ agent-code-assistant/
 
 ## 配套学习
 
-- 理论基础：`05-Agent/8.Code Agent.md`
+- 理论基础：`05-Agent/9.Code Agent.md`
 - 实战教学：`07-项目实战/9.Code-Agent实战.md`

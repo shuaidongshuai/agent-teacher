@@ -43,6 +43,11 @@
 3. [3.Embedding模型怎么选：从效果、成本到部署约束.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/3.Embedding模型怎么选：从效果、成本到部署约束.md)
 4. [4.为什么RAG需要重排序：Rerank原理、价值与选型.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/4.为什么RAG需要重排序：Rerank原理、价值与选型.md)
 5. [5.RAG查询理解：实体提取、Query改写与检索路由.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/5.RAG查询理解：实体提取、Query改写与检索路由.md)
+6. [6.RAG分块策略专题：Chunk切分方案、实现方法与生产实践.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/6.RAG分块策略专题：Chunk切分方案、实现方法与生产实践.md)
+
+如果你想先从一张完整图建立全局理解，建议配合阅读：
+
+- [RAG全流程图页面](</Users/chenmingdong01/Documents/AI/agent/03-RAG/rag-full-pipeline.html>)
 
 ## 5. 本章核心问题
 
@@ -60,6 +65,7 @@
 1. 一个最小 RAG 系统
 2. 一张 RAG 链路问题排查图
 3. 一次失败案例复盘
+4. 一张可以讲清离线、在线、重排、生成与回流的全流程图
 
 ## 7. 常见误区
 

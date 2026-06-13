@@ -67,5 +67,5 @@ agent-memory-enhanced/
 
 ## 配套学习
 
-- 理论基础：`05-Agent/7.Agent记忆系统.md`
+- 理论基础：`05-Agent/8.Agent记忆系统.md`
 - 实战教学：`07-项目实战/8.记忆增强Agent实战.md`

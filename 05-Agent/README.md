@@ -32,7 +32,7 @@
 
 1. 理解 Agent 的闭环、边界和适用场景
 2. 区分 Workflow、Router、ReAct、Multi-Agent 的差异
-3. 理解状态管理、记忆、重试、人工兜底的重要性
+3. 理解 Skill 路由、状态管理、记忆、重试、人工兜底的重要性
 4. 知道从 Demo 到上线为什么会变难
 5. 具备观察、评测和持续优化 Agent 的基本意识
 
@@ -41,21 +41,23 @@
 1. [1.Agent深入学习讲义.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/1.Agent深入学习讲义.md)
 2. [2.生产级Agent有哪些难点：从Demo到上线.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/2.生产级Agent有哪些难点：从Demo到上线.md)
 3. [3.Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/3.Agent系统怎么选型：Workflow、Router、ReAct与Multi-Agent.md)
-4. [4.Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/4.Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
-5. [5.Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/5.Agent观测与评测：如何定位问题并持续优化.md)
-6. [6.Agentic RAG：当Agent遇见检索.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/6.Agentic%20RAG：当Agent遇见检索.md)
-7. [7.Agent记忆系统.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/7.Agent记忆系统.md)
-8. [8.Code Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/8.Code%20Agent.md)
-9. [9.LangGraph入门：作用、优势、常用API与应用场景.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/9.LangGraph入门：作用、优势、常用API与应用场景.md)
+4. [4.当Skill越来越多，怎么保证命中率.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/4.当Skill越来越多，怎么保证命中率.md)
+5. [5.Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/5.Agent稳定性设计：工具调用、状态管理、重试与人工兜底.md)
+6. [6.Agent观测与评测：如何定位问题并持续优化.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/6.Agent观测与评测：如何定位问题并持续优化.md)
+7. [7.Agentic RAG：当Agent遇见检索.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/7.Agentic%20RAG：当Agent遇见检索.md)
+8. [8.Agent记忆系统.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/8.Agent记忆系统.md)
+9. [9.Code Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/9.Code%20Agent.md)
+10. [10.LangGraph入门：作用、优势、常用API与应用场景.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/10.LangGraph入门：作用、优势、常用API与应用场景.md)
 
 ## 5. 本章核心问题
 
-建议始终围绕下面 4 个问题：
+建议始终围绕下面 5 个问题：
 
 1. 这个任务真的需要 Agent 吗
 2. 该用什么架构，复杂度值不值得
-3. 怎么让它稳定工作，而不是一碰就碎
-4. 怎么知道它错在哪一层
+3. 当能力和 Skill 越来越多时，怎么让它仍然选得准
+4. 怎么让它稳定工作，而不是一碰就碎
+5. 怎么知道它错在哪一层
 
 ## 6. 学完后的产出
 
