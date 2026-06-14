@@ -7,11 +7,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from app.rag.bge_embedding import BGEEmbeddingModel
-from app.rag.bm25_retriever import BM25Retriever
-from app.rag.hybrid_retriever import HybridRetriever
-from app.rag.reranker import CrossEncoderReranker
-from app.rag.vector_store import Chunk, FAISSVectorStore
+from .rag.bge_embedding import BGEEmbeddingModel
+from .rag.bm25_retriever import BM25Retriever
+from .rag.hybrid_retriever import HybridRetriever
+from .rag.reranker import CrossEncoderReranker
+from .rag.vector_store import Chunk, FAISSVectorStore
 
 logger = logging.getLogger(__name__)
 

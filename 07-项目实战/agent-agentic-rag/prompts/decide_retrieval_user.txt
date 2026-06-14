@@ -1,0 +1,7 @@
+用户问题：{query}
+
+analyze_query 的结果：
+- complexity: {complexity}
+- info_points:
+{info_points}
+- current_query: {current_query}

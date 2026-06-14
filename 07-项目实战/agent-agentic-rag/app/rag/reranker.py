@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from typing import List, Tuple
 
 from .vector_store import Chunk
@@ -20,7 +21,8 @@ class CrossEncoderReranker:
             return
         from sentence_transformers import CrossEncoder
         logger.info("加载 reranker: %s ...", self.model_name)
-        self._model = CrossEncoder(self.model_name)
+        local_only = Path(self.model_name).exists()
+        self._model = CrossEncoder(self.model_name, local_files_only=local_only)
 
     def rerank(self, query: str, chunks_with_scores: List[Tuple[Chunk, float]],
                top_k: int = 5) -> List[Tuple[Chunk, float]]:

@@ -8,3 +8,6 @@ jieba>=0.42.1
 
 # Agent 编排
 langgraph>=0.2.0
+
+# Gemini Vertex 认证
+google-auth>=2.35.0

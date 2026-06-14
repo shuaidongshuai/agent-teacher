@@ -43,10 +43,25 @@ def main() -> int:
         data_dir=PROJECT_ROOT / "data",
     )
 
-    if not config.openai_api_key:
-        print("\n❌ 请先配置 OPENAI_API_KEY:")
-        print("   export OPENAI_API_KEY=your-key")
-        print("\n   Agentic RAG 的所有决策节点都依赖 LLM，必须配置 API key。")
+    if config.llm_provider == "openai":
+        if not config.openai_api_key:
+            print("\n❌ 请先配置 OPENAI_API_KEY:")
+            print("   export OPENAI_API_KEY=your-key")
+            print("\n   Agentic RAG 的所有决策节点都依赖 LLM，必须配置 API key。")
+            return 1
+    elif config.llm_provider == "gemini_vertex":
+        if not config.gemini_project:
+            print("\n❌ 请先配置 GEMINI_PROJECT:")
+            print("   export LLM_PROVIDER=gemini_vertex")
+            print("   export GEMINI_PROJECT=your-gcp-project")
+            print("   export GEMINI_LOCATION=global")
+            print("   export GEMINI_MODEL=gemini-2.5-flash")
+            print("   export GEMINI_CREDENTIALS_PATH=/path/to/service-account.json")
+            print("\n   如果不配置 GEMINI_CREDENTIALS_PATH，则会尝试使用 ADC / GOOGLE_APPLICATION_CREDENTIALS。")
+            return 1
+    else:
+        print(f"\n❌ 不支持的 LLM_PROVIDER: {config.llm_provider}")
+        print("   可选值: openai | gemini_vertex")
         return 1
 
     # ── 加载知识库 ──
@@ -58,7 +73,10 @@ def main() -> int:
     # ── 构建图 ──
     print("正在构建 Agent 图...")
     graph, llm = build_graph(config, kb)
-    print(f"图构建完成，最多 {config.max_retrieval_rounds} 轮检索，最多 {config.max_llm_calls} 次 LLM 调用")
+    print(
+        f"图构建完成，LLM={config.llm_provider}:{llm.model}，"
+        f"最多 {config.max_retrieval_rounds} 轮检索，最多 {config.max_llm_calls} 次 LLM 调用"
+    )
 
     # ── 获取查询 ──
     if len(sys.argv) > 1:
@@ -150,5 +168,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     import logging
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message)s")
+    logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(name)s] %(message)s")
     raise SystemExit(main())

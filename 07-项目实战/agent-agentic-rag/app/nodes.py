@@ -10,20 +10,21 @@ Agentic RAG 图节点实现。
 import logging
 from typing import Any, Dict
 
-from app.knowledge_base import KnowledgeBase
-from app.llm_client import LLMClient
-from app.prompts import (
-    ANALYZE_QUERY_PROMPT,
-    EVALUATE_RESULTS_PROMPT,
-    GENERATE_ANSWER_PROMPT,
-    REFINE_QUERY_PROMPT,
-)
-from app.state import AgenticRAGState
+from .knowledge_base import KnowledgeBase
+from .llm_client import LLMClient
+from .prompts import PromptManager
+from .state import AgenticRAGState
 
 logger = logging.getLogger(__name__)
 
 
-def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_calls: int = 8):
+def make_nodes(
+    llm: LLMClient,
+    kb: KnowledgeBase,
+    prompt_manager: PromptManager,
+    max_rounds: int = 3,
+    max_llm_calls: int = 8,
+):
     """
     创建所有图节点。
 
@@ -43,8 +44,8 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
         log.append(f"[analyze_query] 开始分析: '{query}'")
 
         messages = [
-            {"role": "system", "content": ANALYZE_QUERY_PROMPT},
-            {"role": "user", "content": f"用户问题：{query}"},
+            {"role": "system", "content": prompt_manager.get("analyze_query")},
+            {"role": "user", "content": prompt_manager.render("analyze_query_user", query=query)},
         ]
 
         try:
@@ -61,6 +62,7 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
             return {
                 "complexity": complexity,
                 "info_points": info_points,
+                "needs_retrieval": True,
                 "current_query": initial_query,
                 "query_history": [initial_query],
                 "retrieval_count": 0,
@@ -74,6 +76,7 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
             return {
                 "complexity": "moderate",
                 "info_points": [query],
+                "needs_retrieval": True,
                 "current_query": query,
                 "query_history": [query],
                 "retrieval_count": 0,
@@ -82,9 +85,63 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
                 "llm_call_count": state.get("llm_call_count", 0) + 1,
             }
 
+    def decide_retrieval(state: AgenticRAGState) -> Dict[str, Any]:
+        """
+        节点2: 判断是否需要检索。
+
+        对寒暄、致谢、纯总结等不依赖外部知识库的问题，
+        直接跳过检索，进入答案生成。
+        """
+        query = state["user_query"]
+        complexity = state.get("complexity", "moderate")
+        info_points = state.get("info_points", [])
+        current_query = state.get("current_query", query)
+        log = list(state.get("execution_log", []))
+        llm_calls = state.get("llm_call_count", 0)
+
+        messages = [
+            {"role": "system", "content": prompt_manager.get("decide_retrieval")},
+            {
+                "role": "user",
+                "content": prompt_manager.render(
+                    "decide_retrieval_user",
+                    query=query,
+                    complexity=complexity,
+                    info_points="\n".join(f"- {item}" for item in info_points) or "- 无",
+                    current_query=current_query,
+                ),
+            },
+        ]
+
+        try:
+            result = llm.generate_json(messages)
+            need_retrieval = bool(result.get("need_retrieval", True))
+            reason = result.get("reason", "")
+            next_action = "retrieve" if need_retrieval else "answer"
+
+            log.append(f"[decide_retrieval] need_retrieval={need_retrieval}")
+            log.append(f"[decide_retrieval] 理由: {reason}")
+            if not need_retrieval:
+                log.append("[decide_retrieval] 不需要检索，直接进入答案生成")
+
+            return {
+                "needs_retrieval": need_retrieval,
+                "next_action": next_action,
+                "execution_log": log,
+                "llm_call_count": llm_calls + 1,
+            }
+        except Exception as e:
+            log.append(f"[decide_retrieval] 判断失败: {e}，默认进入检索")
+            return {
+                "needs_retrieval": True,
+                "next_action": "retrieve",
+                "execution_log": log,
+                "llm_call_count": llm_calls + 1,
+            }
+
     def retrieve(state: AgenticRAGState) -> Dict[str, Any]:
         """
-        节点2: 执行检索。
+        节点3: 执行检索。
 
         这个节点不调用 LLM，直接使用 KnowledgeBase 执行混合检索+重排序。
         检索结果会累积到 accumulated_contexts 中（去重）。
@@ -120,7 +177,7 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
 
     def evaluate_results(state: AgenticRAGState) -> Dict[str, Any]:
         """
-        节点3: 评估检索结果。
+        节点4: 评估检索结果。
 
         LLM 判断当前累积的上下文是否足以回答用户问题。
         这是 Agentic RAG 的核心决策点：
@@ -152,7 +209,8 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
             pages = ", ".join(str(p) for p in ctx["page_span"])
             contexts_text += f"[片段{i}] 页{pages}, {section}\n{ctx['content']}\n\n"
 
-        prompt = EVALUATE_RESULTS_PROMPT.format(
+        prompt = prompt_manager.render(
+            "evaluate_results",
             query=query,
             contexts=contexts_text,
             retrieval_count=count,
@@ -160,8 +218,8 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
         )
 
         messages = [
-            {"role": "system", "content": "你是一个金融投研分析助手的结果评估模块。"},
-            {"role": "user", "content": prompt},
+            {"role": "system", "content": prompt_manager.get("evaluate_results_system")},
+            {"role": "user", "content": prompt_manager.render("evaluate_results_user", prompt=prompt)},
         ]
 
         try:
@@ -200,7 +258,7 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
 
     def refine_query(state: AgenticRAGState) -> Dict[str, Any]:
         """
-        节点4: 改写查询。
+        节点5: 改写查询。
 
         当评估认为信息不足时，LLM 根据已有信息和缺失点生成新的检索 query。
         这体现了 Agentic RAG 的自适应能力——Agent 不是机械重试，
@@ -213,7 +271,8 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
         log = list(state.get("execution_log", []))
         llm_calls = state.get("llm_call_count", 0)
 
-        prompt = REFINE_QUERY_PROMPT.format(
+        prompt = prompt_manager.render(
+            "refine_query",
             query=query,
             query_history="\n".join(f"- {q}" for q in query_history),
             coverage_summary=coverage,
@@ -221,8 +280,8 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
         )
 
         messages = [
-            {"role": "system", "content": "你是一个金融投研分析助手的查询改写模块。"},
-            {"role": "user", "content": prompt},
+            {"role": "system", "content": prompt_manager.get("refine_query_system")},
+            {"role": "user", "content": prompt_manager.render("refine_query_user", prompt=prompt)},
         ]
 
         try:
@@ -255,7 +314,7 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
 
     def generate_answer(state: AgenticRAGState) -> Dict[str, Any]:
         """
-        节点5: 生成最终答案。
+        节点6: 生成最终答案。
 
         基于所有累积的上下文，生成带引用的结构化回答。
         """
@@ -267,17 +326,20 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
         log.append(f"[generate_answer] 基于 {len(accumulated)} 条上下文生成答案")
 
         # 构建上下文文本
-        contexts_text = ""
-        for i, ctx in enumerate(accumulated, 1):
-            section = " > ".join(ctx["section_path"]) if ctx["section_path"] else "未知"
-            pages = ", ".join(str(p) for p in ctx["page_span"])
-            contexts_text += f"【参考文档 {i}】\n  来源: 页{pages}, {section}\n  内容: {ctx['content']}\n\n"
+        if accumulated:
+            contexts_text = ""
+            for i, ctx in enumerate(accumulated, 1):
+                section = " > ".join(ctx["section_path"]) if ctx["section_path"] else "未知"
+                pages = ", ".join(str(p) for p in ctx["page_span"])
+                contexts_text += f"【参考文档 {i}】\n  来源: 页{pages}, {section}\n  内容: {ctx['content']}\n\n"
+        else:
+            contexts_text = "（本轮未使用外部知识库，请仅基于用户问题进行一般性回答，不要编造专业事实或外部数据。）"
 
-        system_prompt = GENERATE_ANSWER_PROMPT.format(contexts=contexts_text)
+        system_prompt = prompt_manager.render("generate_answer", contexts=contexts_text)
 
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"用户问题：{query}"},
+            {"role": "user", "content": prompt_manager.render("generate_answer_user", query=query)},
         ]
 
         try:
@@ -302,7 +364,7 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
 
     def format_output(state: AgenticRAGState) -> Dict[str, Any]:
         """
-        节点6: 格式化输出。
+        节点7: 格式化输出。
 
         整理最终的输出，包括答案、推理轨迹、检索统计。
         主要用于教学观察和调试。
@@ -314,6 +376,7 @@ def make_nodes(llm: LLMClient, kb: KnowledgeBase, max_rounds: int = 3, max_llm_c
 
     return {
         "analyze_query": analyze_query,
+        "decide_retrieval": decide_retrieval,
         "retrieve": retrieve,
         "evaluate_results": evaluate_results,
         "refine_query": refine_query,

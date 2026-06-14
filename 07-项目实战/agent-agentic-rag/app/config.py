@@ -11,6 +11,7 @@ class AgenticRAGConfig:
 
     project_root: Path
     data_dir: Path
+    prompts_dir: Path | None = None
 
     # Embedding
     embedding_model_name: str = "BAAI/bge-small-zh-v1.5"
@@ -30,14 +31,34 @@ class AgenticRAGConfig:
     max_llm_calls: int = 8          # 最多 LLM 调用次数
 
     # LLM
+    llm_provider: str = "openai"
     openai_api_key: str = ""
     openai_base_url: str = ""
     openai_model: str = "gpt-4o-mini"
+    gemini_project: str = ""
+    gemini_location: str = "global"
+    gemini_model: str = "gemini-2.5-flash"
+    gemini_credentials_path: str = ""
 
     def __post_init__(self) -> None:
+        if self.prompts_dir is None:
+            self.prompts_dir = self.project_root / "prompts"
+        if self.embedding_model_name == "BAAI/bge-small-zh-v1.5":
+            self.embedding_model_name = os.getenv("EMBEDDING_MODEL_NAME", "BAAI/bge-small-zh-v1.5")
+        if self.reranker_model_name == "BAAI/bge-reranker-v2-m3":
+            self.reranker_model_name = os.getenv("RERANKER_MODEL_NAME", "BAAI/bge-reranker-v2-m3")
+        self.llm_provider = os.getenv("LLM_PROVIDER", self.llm_provider).strip().lower() or "openai"
         if not self.openai_api_key:
             self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
         if not self.openai_base_url:
             self.openai_base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
         if self.openai_model == "gpt-4o-mini":
             self.openai_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        if not self.gemini_project:
+            self.gemini_project = os.getenv("GEMINI_PROJECT", "")
+        if self.gemini_location == "global":
+            self.gemini_location = os.getenv("GEMINI_LOCATION", "global")
+        if self.gemini_model == "gemini-2.5-flash":
+            self.gemini_model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+        if not self.gemini_credentials_path:
+            self.gemini_credentials_path = os.getenv("GEMINI_CREDENTIALS_PATH", "")

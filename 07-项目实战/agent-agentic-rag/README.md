@@ -23,12 +23,17 @@
 - "从收入结构和成本变化两个维度，评估经营风险" — 一次检索不够，需要多轮
 - "毛利率最高的业务板块是哪个？" — 简单问题，一次检索就够
 
-**Agentic RAG = Agent 自主控制 RAG 管道。** Agent 决定：
+**Agentic RAG = Agent 自主控制 RAG 管道。** 在这个教学项目里，当前实现重点覆盖：
 
-- 要不要检索？
+- 是否需要检索？
 - 用什么 query 检索？
 - 检索结果够不够？不够的话换什么角度补充？
 - 什么时候停下来生成答案？
+
+暂未实现：
+
+- 检索策略路由（BM25 / 向量 / 混合切换）
+- 多知识库 / 多源检索
 
 ## 2. 为什么这个项目适合当前学习阶段
 
@@ -62,9 +67,10 @@
 ### LangGraph 拓扑
 
 ```text
-START → analyze_query → retrieve → evaluate_results ─┬─→ refine_query → retrieve
-                                                      ├─→ retrieve（换 query 直接重试）
-                                                      └─→ generate_answer → format_output → END
+START → analyze_query → decide_retrieval ─┬─→ retrieve → evaluate_results ─┬─→ refine_query → retrieve
+                                           │                                 ├─→ retrieve（换 query 直接重试）
+                                           │                                 └─→ generate_answer
+                                           └─→ generate_answer → format_output → END
 ```
 
 ### 节点说明
@@ -73,6 +79,7 @@ START → analyze_query → retrieve → evaluate_results ─┬─→ refine_qu
 | 节点             | 是否调用 LLM | 功能                             |
 | ---------------- | ------------ | -------------------------------- |
 | analyze_query    | 是           | 分析问题复杂度，制定初始检索策略 |
+| decide_retrieval | 是           | 判断是否需要访问知识库           |
 | retrieve         | 否           | 执行混合检索 + 重排序            |
 | evaluate_results | 是           | 评估信息是否充分，决定下一步     |
 | refine_query     | 是           | 根据缺失信息生成新的检索 query   |
@@ -98,7 +105,7 @@ agent-agentic-rag/
 ├── app/
 │   ├── config.py                   # 配置
 │   ├── llm_client.py               # LLM API 客户端
-│   ├── prompts.py                  # 集中管理的 prompt
+│   ├── prompts.py                  # Prompt 模板加载器
 │   ├── state.py                    # LangGraph 状态定义
 │   ├── nodes.py                    # 图节点实现
 │   ├── graph.py                    # LangGraph 图构建
@@ -109,6 +116,20 @@ agent-agentic-rag/
 │       ├── bm25_retriever.py
 │       ├── hybrid_retriever.py
 │       └── reranker.py
+├── prompts/
+│   ├── analyze_query.txt
+│   ├── analyze_query_user.txt
+│   ├── decide_retrieval.txt
+│   ├── decide_retrieval_user.txt
+│   ├── evaluate_results.txt
+│   ├── evaluate_results_system.txt
+│   ├── evaluate_results_user.txt
+│   ├── refine_query.txt
+│   ├── refine_query_system.txt
+│   ├── refine_query_user.txt
+│   ├── generate_answer.txt
+│   └── generate_answer_user.txt    # 所有请求模板集中管理
+│
 ├── scripts/
 │   ├── build_index.py              # 构建索引
 │   └── run_agent.py                # 主入口
@@ -128,8 +149,25 @@ pip install -r requirements.txt
 ### 运行
 
 ```bash
-# 配置 API key（必需）
+# 方式 1：OpenAI 兼容接口（默认）
+export LLM_PROVIDER=openai
 export OPENAI_API_KEY=your-key
+export OPENAI_BASE_URL=https://api.openai.com/v1
+export OPENAI_MODEL=gpt-4o-mini
+export EMBEDDING_MODEL_NAME=BAAI/bge-small-zh-v1.5
+export RERANKER_MODEL_NAME=BAAI/bge-reranker-v2-m3
+
+# 方式 2：Gemini Vertex AI
+export LLM_PROVIDER=gemini_vertex
+export GEMINI_PROJECT=your-gcp-project
+export GEMINI_LOCATION=global
+export GEMINI_MODEL=gemini-2.5-flash
+export GEMINI_CREDENTIALS_PATH=/path/to/service-account.json
+export EMBEDDING_MODEL_NAME=/path/to/local/bge-small-zh-v1.5
+export RERANKER_MODEL_NAME=/path/to/local/bge-reranker-v2-m3
+
+# 如果不设置 GEMINI_CREDENTIALS_PATH，
+# 会尝试使用 ADC / GOOGLE_APPLICATION_CREDENTIALS
 
 # 构建索引（首次运行）
 python scripts/build_index.py
@@ -140,6 +178,15 @@ python scripts/run_agent.py
 # 或指定查询
 python scripts/run_agent.py "请分析公司的盈利能力变化趋势"
 ```
+
+### 模型切换说明
+
+- `LLM_PROVIDER=openai`：走 OpenAI 兼容 `chat/completions`
+- `LLM_PROVIDER=gemini_vertex`：走 Vertex AI Gemini `generateContent`
+- 业务图节点不需要改，切换只发生在启动配置层
+- `EMBEDDING_MODEL_NAME` / `RERANKER_MODEL_NAME`：支持传 Hugging Face 仓库名或本地模型目录
+- 当这两个变量指向本地目录时，会自动使用 `local_files_only=True`，避免联网探测
+- `SSL_VERIFY`：默认关闭证书校验；如需开启，显式设置 `SSL_VERIFY=true`
 
 ## 7. 推荐观察点
 

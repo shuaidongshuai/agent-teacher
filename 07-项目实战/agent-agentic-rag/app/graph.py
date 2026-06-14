@@ -4,9 +4,11 @@ from __future__ import annotations
 Agentic RAG LangGraph 图构建。
 
 图的拓扑结构：
-    START → analyze_query → retrieve → evaluate_results ─┬─→ refine_query → retrieve
-                                                          ├─→ retrieve（换 query 直接重试）
-                                                          └─→ generate_answer → format_output → END
+    START → analyze_query → decide_retrieval ─┬─→ retrieve → evaluate_results ─┬─→ refine_query → retrieve
+                                               │                                 ├─→ retrieve（换 query 直接重试）
+                                               │                                 └─→ generate_answer
+                                               └─→ generate_answer
+    generate_answer → format_output → END
 
 核心设计：
 1. evaluate_results 是唯一的条件路由节点
@@ -17,11 +19,12 @@ Agentic RAG LangGraph 图构建。
 import logging
 from typing import Any, Dict
 
-from app.config import AgenticRAGConfig
-from app.knowledge_base import KnowledgeBase
-from app.llm_client import LLMClient
-from app.nodes import make_nodes
-from app.state import AgenticRAGState
+from .config import AgenticRAGConfig
+from .knowledge_base import KnowledgeBase
+from .llm_client import LLMClient
+from .nodes import make_nodes
+from .prompts import PromptManager
+from .state import AgenticRAGState
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +46,17 @@ def route_after_evaluation(state: AgenticRAGState) -> str:
         return "generate_answer"
 
 
+def route_after_retrieval_decision(state: AgenticRAGState) -> str:
+    """
+    条件路由函数：根据 decide_retrieval 的结果决定是否进入检索。
+    """
+    action = state.get("next_action", "retrieve")
+    logger.info("是否检索决策: %s", action)
+    if action == "answer":
+        return "generate_answer"
+    return "retrieve"
+
+
 def build_graph(config: AgenticRAGConfig, kb: KnowledgeBase):
     """
     构建 Agentic RAG 的 LangGraph 图。
@@ -56,15 +70,21 @@ def build_graph(config: AgenticRAGConfig, kb: KnowledgeBase):
 
     # 创建 LLM 客户端
     llm = LLMClient(
+        provider=config.llm_provider,
         api_key=config.openai_api_key,
         base_url=config.openai_base_url,
-        model=config.openai_model,
+        model=config.openai_model if config.llm_provider == "openai" else config.gemini_model,
+        gemini_project=config.gemini_project,
+        gemini_location=config.gemini_location,
+        gemini_credentials_path=config.gemini_credentials_path,
     )
 
     # 创建节点函数
+    prompt_manager = PromptManager(config.prompts_dir)
     nodes = make_nodes(
         llm=llm,
         kb=kb,
+        prompt_manager=prompt_manager,
         max_rounds=config.max_retrieval_rounds,
         max_llm_calls=config.max_llm_calls,
     )
@@ -74,6 +94,7 @@ def build_graph(config: AgenticRAGConfig, kb: KnowledgeBase):
 
     # 添加节点
     graph.add_node("analyze_query", nodes["analyze_query"])
+    graph.add_node("decide_retrieval", nodes["decide_retrieval"])
     graph.add_node("retrieve", nodes["retrieve"])
     graph.add_node("evaluate_results", nodes["evaluate_results"])
     graph.add_node("refine_query", nodes["refine_query"])
@@ -82,7 +103,15 @@ def build_graph(config: AgenticRAGConfig, kb: KnowledgeBase):
 
     # 添加边
     graph.add_edge(START, "analyze_query")
-    graph.add_edge("analyze_query", "retrieve")
+    graph.add_edge("analyze_query", "decide_retrieval")
+    graph.add_conditional_edges(
+        "decide_retrieval",
+        route_after_retrieval_decision,
+        {
+            "retrieve": "retrieve",
+            "generate_answer": "generate_answer",
+        },
+    )
     graph.add_edge("retrieve", "evaluate_results")
 
     # 条件路由：evaluate_results 的输出决定走向

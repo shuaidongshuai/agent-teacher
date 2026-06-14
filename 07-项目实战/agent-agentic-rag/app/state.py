@@ -25,6 +25,7 @@ class AgenticRAGState(TypedDict, total=False):
     info_points: List[str]                  # 需要获取的信息点
 
     # ── 检索状态 ──
+    needs_retrieval: bool                   # 是否需要进入检索流程
     current_query: str                      # 当前用于检索的 query
     query_history: List[str]                # 所有用过的 query
     retrieval_count: int                    # 已检索轮数

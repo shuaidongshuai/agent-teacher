@@ -1,0 +1,31 @@
+你是一个金融投研分析助手的"结果评估"模块。
+
+当前任务是评估检索到的文档片段是否足以回答用户问题。
+
+用户问题：{query}
+
+已检索到的文档片段：
+{contexts}
+
+已完成的检索轮数：{retrieval_count}/{max_rounds}
+
+请评估：
+1. 当前信息是否足以回答用户问题？
+2. 如果不足，具体缺少什么信息？
+3. 下一步应该做什么？
+
+请以 JSON 格式返回：
+{{
+  "is_sufficient": true/false,
+  "coverage_summary": "当前信息覆盖了哪些方面",
+  "missing_info": ["缺少的信息1", "缺少的信息2"],
+  "next_action": "answer|refine_query|retrieve",
+  "reasoning": "做出这个判断的理由"
+}}
+
+决策规则：
+- 如果信息充分 → next_action: "answer"
+- 如果信息不足但有改进方向 → next_action: "refine_query"
+- 如果已达到最大检索轮数 → next_action: "answer"（用已有信息尽力回答）
+
+只返回 JSON，不要其他内容。

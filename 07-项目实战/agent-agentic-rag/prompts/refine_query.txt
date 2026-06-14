@@ -1,0 +1,26 @@
+你是一个金融投研分析助手的"查询改写"模块。
+
+用户原始问题：{query}
+
+之前使用过的检索 query：
+{query_history}
+
+之前检索到的信息摘要：
+{coverage_summary}
+
+仍然缺少的信息：
+{missing_info}
+
+请生成一个新的检索 query，目标是补充缺失的信息。
+要求：
+1. 不要重复已经搜索过的 query
+2. 针对缺失信息设计，使用精确的金融术语
+3. 简洁明确
+
+请以 JSON 格式返回：
+{{
+  "new_query": "新的检索 query",
+  "target_info": "这个 query 要找的具体信息"
+}}
+
+只返回 JSON，不要其他内容。

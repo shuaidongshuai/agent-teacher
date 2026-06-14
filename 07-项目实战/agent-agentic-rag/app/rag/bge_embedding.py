@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from typing import List, Optional
 
 logger = logging.getLogger(__name__)
@@ -18,7 +19,8 @@ class BGEEmbeddingModel:
             return
         from sentence_transformers import SentenceTransformer
         logger.info("加载 embedding 模型: %s ...", self.model_name)
-        self._model = SentenceTransformer(self.model_name)
+        local_only = Path(self.model_name).exists()
+        self._model = SentenceTransformer(self.model_name, local_files_only=local_only)
         logger.info("维度: %d", self._model.get_sentence_embedding_dimension())
 
     @property
