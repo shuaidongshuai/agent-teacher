@@ -48,16 +48,19 @@
 8. [8.Agent记忆系统.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/8.Agent记忆系统.md)
 9. [9.Code Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/9.Code%20Agent.md)
 10. [10.LangGraph入门：作用、优势、常用API与应用场景.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/10.LangGraph入门：作用、优势、常用API与应用场景.md)
+11. [11.Harness Engineering：在Agent时代如何驾驭智能体.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/11.Harness%20Engineering：在Agent时代如何驾驭智能体.md)
+12. [12.Loop Engineering：让Agent任务持续流动的工程闭环.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/12.Loop%20Engineering：让Agent任务持续流动的工程闭环.md)
 
 ## 5. 本章核心问题
 
-建议始终围绕下面 5 个问题：
+建议始终围绕下面 6 个问题：
 
 1. 这个任务真的需要 Agent 吗
 2. 该用什么架构，复杂度值不值得
 3. 当能力和 Skill 越来越多时，怎么让它仍然选得准
 4. 怎么让它稳定工作，而不是一碰就碎
 5. 怎么知道它错在哪一层
+6. 当单次 Agent 已经够强时，怎么把重复任务做成持续闭环
 
 ## 6. 学完后的产出
 
@@ -66,6 +69,7 @@
 1. 一个最小单 Agent Demo
 2. 一份 Agent 架构选型说明
 3. 一份失败案例复盘
+4. 一份适合进入 Loop 的任务设计样例
 
 ## 7. 常见误区
 
@@ -73,6 +77,7 @@
 - 误以为 Agent 只是多轮对话
 - 误以为模型够强就不需要状态和兜底设计
 - 误以为 Agent 效果差只能继续调 Prompt
+- 误以为只要 Agent 能单次完成任务，就自然适合做持续自动化
 
 ## 8. 总结与下一步
 

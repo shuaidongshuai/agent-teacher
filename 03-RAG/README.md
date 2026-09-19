@@ -40,14 +40,24 @@
 
 1. [1.RAG系统学习讲义.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/1.RAG系统学习讲义.md)
 2. [2.企业RAG中的离线数据清洗与Embedding实践.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/2.企业RAG中的离线数据清洗与Embedding实践.md)
-3. [3.Embedding模型怎么选：从效果、成本到部署约束.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/3.Embedding模型怎么选：从效果、成本到部署约束.md)
-4. [4.为什么RAG需要重排序：Rerank原理、价值与选型.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/4.为什么RAG需要重排序：Rerank原理、价值与选型.md)
+3. [3.RAG分块策略专题：Chunk切分方案、实现方法与生产实践.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/3.RAG分块策略专题：Chunk切分方案、实现方法与生产实践.md)
+4. [4.Embedding模型怎么选：从效果、成本到部署约束.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/4.Embedding模型怎么选：从效果、成本到部署约束.md)
 5. [5.RAG查询理解：实体提取、Query改写与检索路由.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/5.RAG查询理解：实体提取、Query改写与检索路由.md)
-6. [6.RAG分块策略专题：Chunk切分方案、实现方法与生产实践.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/6.RAG分块策略专题：Chunk切分方案、实现方法与生产实践.md)
+6. [6.为什么RAG需要重排序：Rerank原理、价值与选型.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/6.为什么RAG需要重排序：Rerank原理、价值与选型.md)
+7. [7.RAG检索方案选型：Elasticsearch之外还有哪些选择.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/7.RAG检索方案选型：Elasticsearch之外还有哪些选择.md)
+8. [8.Elasticsearch的实践：用Elasticsearch落地生产级RAG.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/8.Elasticsearch的实践：用Elasticsearch落地生产级RAG.md)
 
 如果你想先从一张完整图建立全局理解，建议配合阅读：
 
 - [RAG全流程图页面](</Users/chenmingdong01/Documents/AI/agent/03-RAG/rag-full-pipeline.html>)
+
+如果你已经理解了检索底座的主流路线，准备进一步把它们落成一个真实检索系统，建议优先阅读：
+
+- [8.Elasticsearch的实践：用Elasticsearch落地生产级RAG.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/8.Elasticsearch的实践：用Elasticsearch落地生产级RAG.md)
+
+如果你已经准备做检索层选型，想比较 Elasticsearch、向量数据库、pgvector 和云托管搜索的差异，建议优先阅读：
+
+- [7.RAG检索方案选型：Elasticsearch之外还有哪些选择.md](/Users/chenmingdong01/Documents/AI/agent/03-RAG/7.RAG检索方案选型：Elasticsearch之外还有哪些选择.md)
 
 ## 5. 本章核心问题
 
