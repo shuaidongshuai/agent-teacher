@@ -15,6 +15,11 @@ __pycache__/
 venv/
 env/˚
 
+# Secrets / env files
+.env
+.env.*
+!*.env.example
+
 # IDEs
 .idea/
 .vscode/

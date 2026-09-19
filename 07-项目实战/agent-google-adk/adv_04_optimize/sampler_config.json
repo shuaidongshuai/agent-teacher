@@ -1,0 +1,9 @@
+{
+  "eval_config": {
+    "criteria": {
+      "response_match_score": 0.5
+    }
+  },
+  "app_name": "adv_04_optimize",
+  "train_eval_set": "adv_04_train"
+}

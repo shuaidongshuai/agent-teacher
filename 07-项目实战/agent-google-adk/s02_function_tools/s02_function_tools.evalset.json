@@ -1,0 +1,86 @@
+{
+  "eval_set_id": "s02_function_tools_evalset",
+  "name": "关卡02 工具调用评测集",
+  "description": "检验 Agent 是否在合适的时候调用了正确的工具，并给出合理回答。",
+  "eval_cases": [
+    {
+      "eval_id": "weather_beijing",
+      "conversation": [
+        {
+          "invocation_id": "inv-1",
+          "user_content": {
+            "parts": [
+              {
+                "text": "北京天气怎么样？"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "北京当前天气：晴，18℃，微风"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "args": {
+                  "city": "北京"
+                },
+                "name": "get_weather"
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 0.0
+        }
+      ],
+      "creation_timestamp": 0.0,
+      "final_session_state": {}
+    },
+    {
+      "eval_id": "time_shanghai",
+      "conversation": [
+        {
+          "invocation_id": "inv-2",
+          "user_content": {
+            "parts": [
+              {
+                "text": "上海现在几点了？"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "上海现在是 ... "
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "args": {
+                  "city": "上海"
+                },
+                "name": "get_current_time"
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 0.0
+        }
+      ],
+      "creation_timestamp": 0.0,
+      "final_session_state": {}
+    }
+  ],
+  "creation_timestamp": 0.0
+}

@@ -1,0 +1,116 @@
+{
+  "eval_set_id": "adv_04_train",
+  "name": "GEPA 训练评测集",
+  "description": "ADK 常见问答，用于 adk optimize 训练。",
+  "eval_cases": [
+    {
+      "eval_id": "case_0",
+      "conversation": [
+        {
+          "invocation_id": "inv-0",
+          "user_content": {
+            "parts": [
+              {
+                "text": "ADK 里 Agent 和 LlmAgent 是什么关系？"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "Agent 是 LlmAgent 的别名，两者是同一个类。"
+              }
+            ],
+            "role": "model"
+          },
+          "creation_timestamp": 0.0
+        }
+      ],
+      "creation_timestamp": 0.0,
+      "final_session_state": {}
+    },
+    {
+      "eval_id": "case_1",
+      "conversation": [
+        {
+          "invocation_id": "inv-1",
+          "user_content": {
+            "parts": [
+              {
+                "text": "SequentialAgent 会自己调用大模型吗？"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "不会，它只负责按顺序编排子 Agent，真正调用模型的是里面的 LlmAgent。"
+              }
+            ],
+            "role": "model"
+          },
+          "creation_timestamp": 0.0
+        }
+      ],
+      "creation_timestamp": 0.0,
+      "final_session_state": {}
+    },
+    {
+      "eval_id": "case_2",
+      "conversation": [
+        {
+          "invocation_id": "inv-2",
+          "user_content": {
+            "parts": [
+              {
+                "text": "怎么让一步的输出传给下一步？"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "用 output_key 把输出写进 state，下一步在 instruction 里用 {key} 读取。"
+              }
+            ],
+            "role": "model"
+          },
+          "creation_timestamp": 0.0
+        }
+      ],
+      "creation_timestamp": 0.0,
+      "final_session_state": {}
+    },
+    {
+      "eval_id": "case_3",
+      "conversation": [
+        {
+          "invocation_id": "inv-3",
+          "user_content": {
+            "parts": [
+              {
+                "text": "设了 output_schema 的 Agent 还能用工具吗？"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "不能，output_schema 与工具、委派互斥。"
+              }
+            ],
+            "role": "model"
+          },
+          "creation_timestamp": 0.0
+        }
+      ],
+      "creation_timestamp": 0.0,
+      "final_session_state": {}
+    }
+  ],
+  "creation_timestamp": 0.0
+}

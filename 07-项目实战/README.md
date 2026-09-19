@@ -65,12 +65,14 @@
 - [9.Code-Agent实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/9.Code-Agent实战.md)
 - [agent-code-assistant/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-code-assistant/README.md)
 
-### L4：规划执行分离 / 多 Agent
+### L4：规划执行分离 / 多 Agent / 框架实战
 
 - [5.架构师与工人Agent实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/5.架构师与工人Agent实战.md)
 - [agent-planner-executor/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-planner-executor/README.md)
 - [6.Multi-Agent数字员工实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/6.Multi-Agent数字员工实战.md)
 - [agent-digital-employee-multi-agent/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-digital-employee-multi-agent/README.md)
+- [11.Google-ADK智能体框架实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/11.Google-ADK智能体框架实战.md)
+- [agent-google-adk/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-google-adk/README.md)
 
 ## 5. 推荐阅读与实战顺序
 

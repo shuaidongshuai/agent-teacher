@@ -1,0 +1,16 @@
+# Google ADK 实战项目依赖
+# 安装：pip install -r requirements.txt
+# 需要 Python 3.10+
+
+google-adk>=1.0.0
+
+# 可选：用 LiteLLM 接入非 Gemini 模型（OpenAI / Anthropic / 本地模型等）
+# 取消下一行注释后即可在 agent 中用 LiteLlm(model="openai/gpt-4o") 等
+# litellm>=1.40.0
+
+# ===== 进阶关卡按需安装 =====
+# 进阶03 A2A（adv_03_a2a）：
+# a2a-sdk>=0.2.0
+# 进阶04 GEPA 优化 + adk eval 评测（adv_04_optimize / s02 评测）：
+# google-adk[eval]
+# 进阶02 MCP（adv_02_mcp_tools）：需要本机装 Node.js（提供 npx），非 pip 依赖

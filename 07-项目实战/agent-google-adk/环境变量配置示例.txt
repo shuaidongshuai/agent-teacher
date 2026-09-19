@@ -1,0 +1,31 @@
+# ============================================================
+# Google ADK 环境变量示例
+# 用法：把本文件内容复制到一个名为 .env 的文件里
+#   （可放项目根目录，也可放到每个 agent 子文件夹内）
+# .env 已被 .gitignore 忽略，不会提交，安全存放 Key。
+# ============================================================
+
+# --- 方式一：使用 Google AI Studio（个人学习首选，有免费额度）---
+# 免费获取 Key：https://aistudio.google.com/apikey
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+GOOGLE_API_KEY=在这里填入你的_AI_Studio_API_Key
+
+# --- 方式二：使用 Vertex AI（企业 / GCP 项目，对应 Java 里的 .vertexAI(true)）---
+# 用法 A：本机已登录 gcloud
+#   gcloud auth application-default login
+# 用法 B：用服务账号密钥（对应 Java 的 GoogleCredentials.fromStream(...)）
+#   下面这行指向密钥 json；Python 走标准 ADC，会自动加 cloud-platform scope
+# GOOGLE_GENAI_USE_VERTEXAI=TRUE
+# GOOGLE_CLOUD_PROJECT=xiling-453607
+# GOOGLE_CLOUD_LOCATION=global
+# GOOGLE_APPLICATION_CREDENTIALS=/Users/chenmingdong01/Documents/work/gcs_credentials.json
+# 注意：密钥所属 project 最好与 GOOGLE_CLOUD_PROJECT 一致，否则该服务账号需被显式授权
+
+# --- 可选：走本地代理（对应 Java 里的 127.0.0.1:7890）---
+# google-genai 底层用 httpx，默认读取下面两个变量，无需像 Java 那样反射注入
+# HTTPS_PROXY=http://127.0.0.1:7890
+# HTTP_PROXY=http://127.0.0.1:7890
+
+# --- 可选：本项目统一使用的模型名 ---
+# 各关卡代码默认读取此变量，缺省时用 gemini-2.5-flash
+ADK_MODEL=gemini-2.5-flash
