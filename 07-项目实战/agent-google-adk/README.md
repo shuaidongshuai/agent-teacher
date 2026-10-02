@@ -69,6 +69,8 @@ adk eval s02_function_tools s02_function_tools/s02_function_tools.evalset.json
 
 > 评测需要真实模型 Key（会实际调用模型跑一遍再对比）。
 
+> 想系统学评测（evalset 结构 / 两类指标 / 看报告 / CI 回归闸门），看进阶06 [adv_06_eval/README.md](adv_06_eval/README.md)。
+
 ## 进阶关卡（选学，4 个更强的能力）
 
 学完 11 关 + capstone 后，这 4 关带你进入 ADK 的生产级/前沿能力。每关仍是标准 ADK 目录结构。
@@ -79,6 +81,12 @@ adk eval s02_function_tools s02_function_tools/s02_function_tools.evalset.json
 | 进阶02 | `adv_02_mcp_tools` | 用 `MCPToolset` 接入 MCP 文件系统服务器 | Node.js（`npx`） |
 | 进阶03 | `adv_03_a2a` | A2A 协议：跨进程调用远程 Agent | `pip install a2a-sdk` |
 | 进阶04 | `adv_04_optimize` | GEPA 提示词自动优化（`adk optimize`） | `pip install "google-adk[eval]"` |
+| 进阶05 | `adv_05_skills` | 加载 + 检索多个本地 Skill（`google.adk.skills`） | 无（`demo.py` 离线可跑） |
+| 进阶06 | `adv_06_eval` | 评测闭环：evalset + `adk eval` + CI 回归闸门 | 无（跑 eval 需凭证） |
+
+> 进阶04 的 GEPA 原理、何时用、相比手动调 prompt 的优势、断点续跑与停止方式，见 [adv_04_optimize/README.md](adv_04_optimize/README.md)。
+> 进阶05 是**可生产级**写法（应对"skill 上千"）：不把全量目录塞进 prompt，而用两段式工具 `search_skills`(top-k 候选) → `load_skill`(命中再取正文)。检索在 [skill_index.py](adv_05_skills/skill_index.py)：**L1（name+desc[+向量]）常驻内存、L2（正文）命中才从磁盘懒加载**；向量按内容 hash **落盘缓存 + 增量嵌入**（缓存全热则启动零嵌入调用）；默认关键词、`ADK_SKILL_EMBEDDING=1` 切 Gemini 向量检索，离线/无凭证自动降级。
+> 进阶06 把"能跑"升级成"能评、能回归"：evalset 结构、`tool_trajectory_avg_score` vs `response_match_score` 两类指标、`adk eval` 看报告、以及 `ci_gate.py` 当 CI 回归闸门，详见 [adv_06_eval/README.md](adv_06_eval/README.md)。
 
 运行要点：
 
@@ -96,9 +104,23 @@ uvicorn adv_03_a2a.remote_server:a2a_app --host localhost --port 8001
 adk run adv_03_a2a
 
 # 进阶04：GEPA 自动优化 instruction（真实多轮调用，耗配额，实验特性）
-adk optimize adv_04_optimize/__init__.py \
+# 注意：最后传的是 agent 目录 adv_04_optimize（不是 __init__.py 文件）
+# faq_agent 已挂 before/after_model_callback，会逐次打印 instruction/输入/返回，可看进化过程
+adk optimize adv_04_optimize \
     --sampler_config_file_path adv_04_optimize/sampler_config.json \
+    --optimizer_config_file_path adv_04_optimize/optimizer_config.json \
     --print_detailed_results
+
+# 进阶05：先离线看"加载+检索多个本地 skill"（不需要 Key）
+python adv_05_skills/demo.py "帮我写 git commit"
+# 再作为 Agent 跑（会先 search_skills 检索 top-k、命中再 load_skill 取正文照做）
+adk run adv_05_skills
+# 想用向量检索（需凭证）：设开关后再跑
+ADK_SKILL_EMBEDDING=1 adk run adv_05_skills
+
+# 进阶06：评测闭环（需凭证，会实际跑 agent 再对比）
+adk eval adv_06_eval adv_06_eval/adv_06_eval.evalset.json
+python adv_06_eval/ci_gate.py     # 当 CI 回归闸门：掉分则非零退出
 ```
 
 ## 目录结构
@@ -107,20 +129,42 @@ adk optimize adv_04_optimize/__init__.py \
 agent-google-adk/
 ├── requirements.txt
 ├── 环境变量配置示例.txt        # 复制成 .env 使用
-├── run_demo.py                 # 编程式运行 capstone
-├── s01_llm_agent/ ... s11_memory/   # 11 个单点关卡（各含 __init__.py + agent.py）
-└── research_assistant/         # capstone：schemas / tools / callbacks / agent
+├── run_demo.py                 # 编程式运行 capstone（已内置调用顺序日志）
+├── tracing.py                  # 全局 TracePlugin：打印每个 Agent 的进入/离开
+├── s01_llm_agent/ ... s11_memory/   # 11 个核心关卡（各含 __init__.py + agent.py）
+├── research_assistant/         # capstone：schemas / tools / callbacks / agent
+└── adv_01_custom_agent/ ... adv_06_eval/   # 6 个进阶关卡（adv_05 内含 skills/*.SKILL.md）
 ```
 
 每个关卡文件夹都是**自包含**的：一个 `__init__.py`（`from . import agent`）+ 一个
 `agent.py`（定义 `root_agent`）。这正是 ADK 约定的 Agent 目录结构，可直接被 `adk web`/`adk run` 识别。
 
+## 看清 Agent 调用顺序（多智能体/工作流必备）
+
+多 Agent 跑起来时，光看输出分不清"先调谁、后调谁"。项目提供了全局 [tracing.py](tracing.py)
+里的 `TracePlugin`，会在**每个 Agent 进入/离开时打印**，一处生效、覆盖所有关卡：
+
+```bash
+# 方式1：adk web 加载全局 Plugin（推荐，覆盖所有关卡）
+adk web --extra_plugins tracing.TracePlugin
+
+# 方式2：run_demo.py 已内置 TracePlugin，直接就能看到 capstone 的流水线顺序
+python run_demo.py "多智能体系统"
+```
+
+它是 ADK 的 **Plugin（全局钩子）**，相当于 callback 的"全局版"——不用去每个关卡里逐个加。
+（`adk run` 暂不支持 `--extra_plugins`，想看顺序请用上面两种方式。另外 `adv_01_custom_agent`
+自己已内置逐-agent 日志作演示，用 `adk web` 看它时不必再加 `--extra_plugins`，否则会重复打印。）
+
 ## 建议学习顺序
 
 1. 按 `s01 → s11` 逐关卡看代码 + 跑 `adk web`，每关只盯住"这一关新增的那个概念"。
-2. 看懂后再读 `research_assistant/agent.py`，观察这些能力如何组合成一条流水线。
+2. 看懂后读 `research_assistant/agent.py`，观察这些能力如何组合成一条流水线。
 3. 跑 `python run_demo.py`，对照打印出的执行轨迹理解"规划→并行研究→撰写→评审→定稿"。
 4. 做讲义结尾的练习题（改造 capstone）。
+5. **进阶（选学）**：再按 `adv_01 → adv_04` 深入——先做 `adv_01_custom_agent`（动态控制流，
+   最能提升功力），再按兴趣做 MCP / A2A / GEPA 优化。运行前看上面"进阶关卡"节的额外依赖。
+
 
 ## 换成非 Gemini 模型（可选）
 

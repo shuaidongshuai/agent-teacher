@@ -27,6 +27,7 @@ from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
 from research_assistant.agent import root_agent
+from tracing import TracePlugin
 
 APP_NAME = "research_assistant"
 USER_ID = "demo_user"
@@ -43,7 +44,13 @@ def _has_credentials() -> bool:
 
 async def run(topic: str) -> None:
     session_service = InMemorySessionService()
-    runner = Runner(agent=root_agent, app_name=APP_NAME, session_service=session_service)
+    runner = Runner(
+        agent=root_agent,
+        app_name=APP_NAME,
+        session_service=session_service,
+        # 全局 Plugin：打印每个子 Agent 的进入/离开，观察流水线执行顺序
+        plugins=[TracePlugin()],
+    )
     session = await session_service.create_session(app_name=APP_NAME, user_id=USER_ID)
 
     print(f"\n=== 研究主题：{topic} ===\n")

@@ -1,0 +1,1034 @@
+{
+  "eval_set_result_id": "adv_06_eval_adv_06_eval_1790932813.157082",
+  "eval_set_result_name": "adv_06_eval_adv_06_eval_1790932813.157082",
+  "eval_set_id": "adv_06_eval",
+  "eval_case_results": [
+    {
+      "eval_set_file": "adv_06_eval",
+      "eval_set_id": "adv_06_eval",
+      "eval_id": "weather_beijing",
+      "final_eval_status": 1,
+      "eval_metric_results": null,
+      "overall_eval_metric_results": [
+        {
+          "metric_name": "tool_trajectory_avg_score",
+          "threshold": 1.0,
+          "criterion": {
+            "threshold": 1.0,
+            "include_intermediate_responses_in_final": false
+          },
+          "custom_function_path": null,
+          "score": 1.0,
+          "eval_status": 1,
+          "details": {
+            "rubric_scores": null
+          }
+        },
+        {
+          "metric_name": "response_match_score",
+          "threshold": 0.3,
+          "criterion": {
+            "threshold": 0.3,
+            "include_intermediate_responses_in_final": false
+          },
+          "custom_function_path": null,
+          "score": 1.0,
+          "eval_status": 1,
+          "details": {
+            "rubric_scores": null
+          }
+        }
+      ],
+      "eval_metric_result_per_invocation": [
+        {
+          "actual_invocation": {
+            "invocation_id": "e-934b8b44-3cbb-475e-adff-283fffcca62e",
+            "user_content": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "北京天气怎么样？",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "user"
+            },
+            "final_response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "北京当前天气晴，18℃。",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "model"
+            },
+            "intermediate_data": {
+              "invocation_events": [
+                {
+                  "author": "eval_demo_agent",
+                  "content": {
+                    "parts": [
+                      {
+                        "media_resolution": null,
+                        "code_execution_result": null,
+                        "executable_code": null,
+                        "file_data": null,
+                        "function_call": {
+                          "id": "adk-69eaac3b-1e8d-47fb-8751-f606a20a5558",
+                          "args": {
+                            "city": "北京"
+                          },
+                          "name": "get_weather",
+                          "partial_args": null,
+                          "will_continue": null
+                        },
+                        "function_response": null,
+                        "inline_data": null,
+                        "text": null,
+                        "thought": null,
+                        "thought_signature": "CoQCAY89a19zBywtUcst8d_UY_u6A4A_8Y3HRJ69Pgxg0Rfh_8c8_EeAqFWKLGD6OTYyPOeM8Jbmeb5bC2u0zFKRPhbFHfloBITL1Ewy1H6ihTj2KDsHR2K6bCeiocBs9xYc5mQJPNsyXJOHJRrFan1jEmizkcg0qAQeZC0ljctVM0EnVkSbZp2axcBqdOWDXrkboauEDzp2ThZoQcNtIXkRFnPK2Peb_LrTtrqMB0YUz-lcDoVgVn1QG1b1Q6GCtWGkr3l5r3g_jXdGVNsaaj09RnrGAvUIoz0qPb6uTyH1_Pb6EXLCvHUXUJzF5pvG_oO9tnYtKoECL-REwkB3u12P4cC6VPY=",
+                        "video_metadata": null,
+                        "tool_call": null,
+                        "tool_response": null,
+                        "part_metadata": null,
+                        "audio_transcription": null,
+                        "media_processing": null
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "grounding_metadata": null
+                },
+                {
+                  "author": "eval_demo_agent",
+                  "content": {
+                    "parts": [
+                      {
+                        "media_resolution": null,
+                        "code_execution_result": null,
+                        "executable_code": null,
+                        "file_data": null,
+                        "function_call": null,
+                        "function_response": {
+                          "will_continue": null,
+                          "scheduling": null,
+                          "parts": null,
+                          "id": "adk-69eaac3b-1e8d-47fb-8751-f606a20a5558",
+                          "name": "get_weather",
+                          "response": {
+                            "status": "success",
+                            "report": "北京当前天气：晴，18℃"
+                          }
+                        },
+                        "inline_data": null,
+                        "text": null,
+                        "thought": null,
+                        "thought_signature": null,
+                        "video_metadata": null,
+                        "tool_call": null,
+                        "tool_response": null,
+                        "part_metadata": null,
+                        "audio_transcription": null,
+                        "media_processing": null
+                      }
+                    ],
+                    "role": "user"
+                  },
+                  "grounding_metadata": null
+                }
+              ]
+            },
+            "creation_timestamp": 1790932811.681646,
+            "rubrics": null,
+            "app_details": {
+              "agent_details": {
+                "eval_demo_agent": {
+                  "name": "eval_demo_agent",
+                  "instructions": "你是生活助手。问天气就调用 get_weather，问时间就调用 get_current_time；拿到结果后用一句话友好地转述，不要编造数据。\n\nYou are an agent. Your internal name is \"eval_demo_agent\". The description about you is \"能查天气和时间的助手，用于演示评测。\".",
+                  "tool_declarations": [
+                    {
+                      "retrieval": null,
+                      "computer_use": null,
+                      "file_search": null,
+                      "google_search": null,
+                      "google_maps": null,
+                      "code_execution": null,
+                      "enterprise_web_search": null,
+                      "function_declarations": [
+                        {
+                          "description": "查询指定城市当前的天气。\n\nArgs:\n    city: 城市名，如 \"北京\"。",
+                          "name": "get_weather",
+                          "parameters": null,
+                          "parameters_json_schema": {
+                            "properties": {
+                              "city": {
+                                "title": "City",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "city"
+                            ],
+                            "title": "get_weatherParams",
+                            "type": "object"
+                          },
+                          "response": null,
+                          "response_json_schema": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "behavior": null
+                        },
+                        {
+                          "description": "查询指定城市的当前时间（演示用，返回固定文案）。\n\nArgs:\n    city: 城市名，如 \"上海\"。",
+                          "name": "get_current_time",
+                          "parameters": null,
+                          "parameters_json_schema": {
+                            "properties": {
+                              "city": {
+                                "title": "City",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "city"
+                            ],
+                            "title": "get_current_timeParams",
+                            "type": "object"
+                          },
+                          "response": null,
+                          "response_json_schema": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "behavior": null
+                        }
+                      ],
+                      "google_search_retrieval": null,
+                      "parallel_ai_search": null,
+                      "url_context": null,
+                      "mcp_servers": null,
+                      "exa_ai_search": null
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "expected_invocation": {
+            "invocation_id": "inv-1",
+            "user_content": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "北京天气怎么样？",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "user"
+            },
+            "final_response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "北京当前天气：晴，18℃",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "model"
+            },
+            "intermediate_data": {
+              "tool_uses": [
+                {
+                  "id": null,
+                  "args": {
+                    "city": "北京"
+                  },
+                  "name": "get_weather",
+                  "partial_args": null,
+                  "will_continue": null
+                }
+              ],
+              "tool_responses": [],
+              "intermediate_responses": []
+            },
+            "creation_timestamp": 0.0,
+            "rubrics": null,
+            "app_details": null
+          },
+          "eval_metric_results": [
+            {
+              "metric_name": "tool_trajectory_avg_score",
+              "threshold": 1.0,
+              "criterion": {
+                "threshold": 1.0,
+                "include_intermediate_responses_in_final": false
+              },
+              "custom_function_path": null,
+              "score": 1.0,
+              "eval_status": 1,
+              "details": {
+                "rubric_scores": null
+              }
+            },
+            {
+              "metric_name": "response_match_score",
+              "threshold": 0.3,
+              "criterion": {
+                "threshold": 0.3,
+                "include_intermediate_responses_in_final": false
+              },
+              "custom_function_path": null,
+              "score": 1.0,
+              "eval_status": 1,
+              "details": {
+                "rubric_scores": null
+              }
+            }
+          ]
+        }
+      ],
+      "session_id": "___eval___session___d7523c5d-40b9-43f2-a8b9-7d703cadca0b",
+      "session_details": null,
+      "user_id": "test_user_id"
+    },
+    {
+      "eval_set_file": "adv_06_eval",
+      "eval_set_id": "adv_06_eval",
+      "eval_id": "time_shanghai",
+      "final_eval_status": 1,
+      "eval_metric_results": null,
+      "overall_eval_metric_results": [
+        {
+          "metric_name": "tool_trajectory_avg_score",
+          "threshold": 1.0,
+          "criterion": {
+            "threshold": 1.0,
+            "include_intermediate_responses_in_final": false
+          },
+          "custom_function_path": null,
+          "score": 1.0,
+          "eval_status": 1,
+          "details": {
+            "rubric_scores": null
+          }
+        },
+        {
+          "metric_name": "response_match_score",
+          "threshold": 0.3,
+          "criterion": {
+            "threshold": 0.3,
+            "include_intermediate_responses_in_final": false
+          },
+          "custom_function_path": null,
+          "score": 1.0,
+          "eval_status": 1,
+          "details": {
+            "rubric_scores": null
+          }
+        }
+      ],
+      "eval_metric_result_per_invocation": [
+        {
+          "actual_invocation": {
+            "invocation_id": "e-b68a4068-aef1-4dcb-91bf-716c6b506805",
+            "user_content": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "上海现在几点了？",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "user"
+            },
+            "final_response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "上海现在是北京时间（东八区）。",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "model"
+            },
+            "intermediate_data": {
+              "invocation_events": [
+                {
+                  "author": "eval_demo_agent",
+                  "content": {
+                    "parts": [
+                      {
+                        "media_resolution": null,
+                        "code_execution_result": null,
+                        "executable_code": null,
+                        "file_data": null,
+                        "function_call": {
+                          "id": "adk-0711986f-8b7a-42b8-ab59-87e01aece238",
+                          "args": {
+                            "city": "上海"
+                          },
+                          "name": "get_current_time",
+                          "partial_args": null,
+                          "will_continue": null
+                        },
+                        "function_response": null,
+                        "inline_data": null,
+                        "text": null,
+                        "thought": null,
+                        "thought_signature": "AY89a1_eGb8ySRJ-utVe5mybdl8tAMYvJ1Cyeqct_jB7MM6jBVOt2YPG24c_TPy1I9upSeko6WzvysU5ONT-SRprQYX3DyGlmFUgF31ykeUUygoBH2gZKBDCNMKEm_dLBP062q-NykpsGNZaEEM9zLfBTuEKfUpC5xiQxVcjrWtr5lzpM3XRt3LyoOvL0WwbjtZmwuFlzXXpoJ8t3TyAKwnus6AgIcfE7eY7vIDezbbjr3zechtcrChO5ROuGUljyCrA4Os-YqNAn_Ta4NECMQCTbe9ZF96m5ayojzsQl_xgh0pyk7CFjevo3r4D2iU-pFHrzaSGC4kmFOdAVWa4ZZ8-OLCCz2N_bCqRuDpYlXVm265Tuv9bPJl7s3A3KuxXAkI1E_xanBT4IgaQYKWRaqga",
+                        "video_metadata": null,
+                        "tool_call": null,
+                        "tool_response": null,
+                        "part_metadata": null,
+                        "audio_transcription": null,
+                        "media_processing": null
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "grounding_metadata": null
+                },
+                {
+                  "author": "eval_demo_agent",
+                  "content": {
+                    "parts": [
+                      {
+                        "media_resolution": null,
+                        "code_execution_result": null,
+                        "executable_code": null,
+                        "file_data": null,
+                        "function_call": null,
+                        "function_response": {
+                          "will_continue": null,
+                          "scheduling": null,
+                          "parts": null,
+                          "id": "adk-0711986f-8b7a-42b8-ab59-87e01aece238",
+                          "name": "get_current_time",
+                          "response": {
+                            "status": "success",
+                            "report": "上海现在是北京时间（东八区）。"
+                          }
+                        },
+                        "inline_data": null,
+                        "text": null,
+                        "thought": null,
+                        "thought_signature": null,
+                        "video_metadata": null,
+                        "tool_call": null,
+                        "tool_response": null,
+                        "part_metadata": null,
+                        "audio_transcription": null,
+                        "media_processing": null
+                      }
+                    ],
+                    "role": "user"
+                  },
+                  "grounding_metadata": null
+                }
+              ]
+            },
+            "creation_timestamp": 1790932811.743071,
+            "rubrics": null,
+            "app_details": {
+              "agent_details": {
+                "eval_demo_agent": {
+                  "name": "eval_demo_agent",
+                  "instructions": "你是生活助手。问天气就调用 get_weather，问时间就调用 get_current_time；拿到结果后用一句话友好地转述，不要编造数据。\n\nYou are an agent. Your internal name is \"eval_demo_agent\". The description about you is \"能查天气和时间的助手，用于演示评测。\".",
+                  "tool_declarations": [
+                    {
+                      "retrieval": null,
+                      "computer_use": null,
+                      "file_search": null,
+                      "google_search": null,
+                      "google_maps": null,
+                      "code_execution": null,
+                      "enterprise_web_search": null,
+                      "function_declarations": [
+                        {
+                          "description": "查询指定城市当前的天气。\n\nArgs:\n    city: 城市名，如 \"北京\"。",
+                          "name": "get_weather",
+                          "parameters": null,
+                          "parameters_json_schema": {
+                            "properties": {
+                              "city": {
+                                "title": "City",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "city"
+                            ],
+                            "title": "get_weatherParams",
+                            "type": "object"
+                          },
+                          "response": null,
+                          "response_json_schema": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "behavior": null
+                        },
+                        {
+                          "description": "查询指定城市的当前时间（演示用，返回固定文案）。\n\nArgs:\n    city: 城市名，如 \"上海\"。",
+                          "name": "get_current_time",
+                          "parameters": null,
+                          "parameters_json_schema": {
+                            "properties": {
+                              "city": {
+                                "title": "City",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "city"
+                            ],
+                            "title": "get_current_timeParams",
+                            "type": "object"
+                          },
+                          "response": null,
+                          "response_json_schema": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "behavior": null
+                        }
+                      ],
+                      "google_search_retrieval": null,
+                      "parallel_ai_search": null,
+                      "url_context": null,
+                      "mcp_servers": null,
+                      "exa_ai_search": null
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "expected_invocation": {
+            "invocation_id": "inv-2",
+            "user_content": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "上海现在几点了？",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "user"
+            },
+            "final_response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "上海现在是北京时间（东八区）。",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "model"
+            },
+            "intermediate_data": {
+              "tool_uses": [
+                {
+                  "id": null,
+                  "args": {
+                    "city": "上海"
+                  },
+                  "name": "get_current_time",
+                  "partial_args": null,
+                  "will_continue": null
+                }
+              ],
+              "tool_responses": [],
+              "intermediate_responses": []
+            },
+            "creation_timestamp": 0.0,
+            "rubrics": null,
+            "app_details": null
+          },
+          "eval_metric_results": [
+            {
+              "metric_name": "tool_trajectory_avg_score",
+              "threshold": 1.0,
+              "criterion": {
+                "threshold": 1.0,
+                "include_intermediate_responses_in_final": false
+              },
+              "custom_function_path": null,
+              "score": 1.0,
+              "eval_status": 1,
+              "details": {
+                "rubric_scores": null
+              }
+            },
+            {
+              "metric_name": "response_match_score",
+              "threshold": 0.3,
+              "criterion": {
+                "threshold": 0.3,
+                "include_intermediate_responses_in_final": false
+              },
+              "custom_function_path": null,
+              "score": 1.0,
+              "eval_status": 1,
+              "details": {
+                "rubric_scores": null
+              }
+            }
+          ]
+        }
+      ],
+      "session_id": "___eval___session___750f3f13-44a8-485e-ae8d-556f44d8355c",
+      "session_details": null,
+      "user_id": "test_user_id"
+    },
+    {
+      "eval_set_file": "adv_06_eval",
+      "eval_set_id": "adv_06_eval",
+      "eval_id": "weather_shenzhen",
+      "final_eval_status": 1,
+      "eval_metric_results": null,
+      "overall_eval_metric_results": [
+        {
+          "metric_name": "tool_trajectory_avg_score",
+          "threshold": 1.0,
+          "criterion": {
+            "threshold": 1.0,
+            "include_intermediate_responses_in_final": false
+          },
+          "custom_function_path": null,
+          "score": 1.0,
+          "eval_status": 1,
+          "details": {
+            "rubric_scores": null
+          }
+        },
+        {
+          "metric_name": "response_match_score",
+          "threshold": 0.3,
+          "criterion": {
+            "threshold": 0.3,
+            "include_intermediate_responses_in_final": false
+          },
+          "custom_function_path": null,
+          "score": 0.6956521739130435,
+          "eval_status": 1,
+          "details": {
+            "rubric_scores": null
+          }
+        }
+      ],
+      "eval_metric_result_per_invocation": [
+        {
+          "actual_invocation": {
+            "invocation_id": "e-6bdcb256-4b9b-48a9-a661-f0d060116e07",
+            "user_content": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "深圳天气如何？",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "user"
+            },
+            "final_response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "深圳当前是阵雨，气温27摄氏度。",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "model"
+            },
+            "intermediate_data": {
+              "invocation_events": [
+                {
+                  "author": "eval_demo_agent",
+                  "content": {
+                    "parts": [
+                      {
+                        "media_resolution": null,
+                        "code_execution_result": null,
+                        "executable_code": null,
+                        "file_data": null,
+                        "function_call": {
+                          "id": "adk-766560f7-cc07-4b2e-a748-368afa3b9a9a",
+                          "args": {
+                            "city": "深圳"
+                          },
+                          "name": "get_weather",
+                          "partial_args": null,
+                          "will_continue": null
+                        },
+                        "function_response": null,
+                        "inline_data": null,
+                        "text": null,
+                        "thought": null,
+                        "thought_signature": "CoACAY89a1_QFrzrPV1pd8skhetSgLspUAC4BJIHXnl9pLbSLdtAIamdnH0yfu1X8mHMSTveyyxiy2RgJJeDi1TpTfgCvv-tYjfwU96odq6y7biSFRh989i5YWSE7cbX_kLwPkukZedwJct8pfMTyRLhOcoHdRamM5PPT2QbqxiRei90jIF_N9h7MEY6vVIMYVQ-rNESTbZ5hffUGxGMv0jE7t9s0UAPiuuXURD5Z4smGMx31gvAay3TRm2l8G587WOW5rKkx0ArnekqpBrP2uPAB2RPP0qahZWjPqZoipDjwtnYVgXT6QMu9fNIrHAnh-Ajx-z1FI8YDJU5ZitfYNdwpA==",
+                        "video_metadata": null,
+                        "tool_call": null,
+                        "tool_response": null,
+                        "part_metadata": null,
+                        "audio_transcription": null,
+                        "media_processing": null
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "grounding_metadata": null
+                },
+                {
+                  "author": "eval_demo_agent",
+                  "content": {
+                    "parts": [
+                      {
+                        "media_resolution": null,
+                        "code_execution_result": null,
+                        "executable_code": null,
+                        "file_data": null,
+                        "function_call": null,
+                        "function_response": {
+                          "will_continue": null,
+                          "scheduling": null,
+                          "parts": null,
+                          "id": "adk-766560f7-cc07-4b2e-a748-368afa3b9a9a",
+                          "name": "get_weather",
+                          "response": {
+                            "status": "success",
+                            "report": "深圳当前天气：阵雨，27℃"
+                          }
+                        },
+                        "inline_data": null,
+                        "text": null,
+                        "thought": null,
+                        "thought_signature": null,
+                        "video_metadata": null,
+                        "tool_call": null,
+                        "tool_response": null,
+                        "part_metadata": null,
+                        "audio_transcription": null,
+                        "media_processing": null
+                      }
+                    ],
+                    "role": "user"
+                  },
+                  "grounding_metadata": null
+                }
+              ]
+            },
+            "creation_timestamp": 1790932812.141353,
+            "rubrics": null,
+            "app_details": {
+              "agent_details": {
+                "eval_demo_agent": {
+                  "name": "eval_demo_agent",
+                  "instructions": "你是生活助手。问天气就调用 get_weather，问时间就调用 get_current_time；拿到结果后用一句话友好地转述，不要编造数据。\n\nYou are an agent. Your internal name is \"eval_demo_agent\". The description about you is \"能查天气和时间的助手，用于演示评测。\".",
+                  "tool_declarations": [
+                    {
+                      "retrieval": null,
+                      "computer_use": null,
+                      "file_search": null,
+                      "google_search": null,
+                      "google_maps": null,
+                      "code_execution": null,
+                      "enterprise_web_search": null,
+                      "function_declarations": [
+                        {
+                          "description": "查询指定城市当前的天气。\n\nArgs:\n    city: 城市名，如 \"北京\"。",
+                          "name": "get_weather",
+                          "parameters": null,
+                          "parameters_json_schema": {
+                            "properties": {
+                              "city": {
+                                "title": "City",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "city"
+                            ],
+                            "title": "get_weatherParams",
+                            "type": "object"
+                          },
+                          "response": null,
+                          "response_json_schema": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "behavior": null
+                        },
+                        {
+                          "description": "查询指定城市的当前时间（演示用，返回固定文案）。\n\nArgs:\n    city: 城市名，如 \"上海\"。",
+                          "name": "get_current_time",
+                          "parameters": null,
+                          "parameters_json_schema": {
+                            "properties": {
+                              "city": {
+                                "title": "City",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "city"
+                            ],
+                            "title": "get_current_timeParams",
+                            "type": "object"
+                          },
+                          "response": null,
+                          "response_json_schema": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "behavior": null
+                        }
+                      ],
+                      "google_search_retrieval": null,
+                      "parallel_ai_search": null,
+                      "url_context": null,
+                      "mcp_servers": null,
+                      "exa_ai_search": null
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "expected_invocation": {
+            "invocation_id": "inv-3",
+            "user_content": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "深圳天气如何？",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "user"
+            },
+            "final_response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "深圳当前天气：阵雨，27℃",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null,
+                  "media_processing": null
+                }
+              ],
+              "role": "model"
+            },
+            "intermediate_data": {
+              "tool_uses": [
+                {
+                  "id": null,
+                  "args": {
+                    "city": "深圳"
+                  },
+                  "name": "get_weather",
+                  "partial_args": null,
+                  "will_continue": null
+                }
+              ],
+              "tool_responses": [],
+              "intermediate_responses": []
+            },
+            "creation_timestamp": 0.0,
+            "rubrics": null,
+            "app_details": null
+          },
+          "eval_metric_results": [
+            {
+              "metric_name": "tool_trajectory_avg_score",
+              "threshold": 1.0,
+              "criterion": {
+                "threshold": 1.0,
+                "include_intermediate_responses_in_final": false
+              },
+              "custom_function_path": null,
+              "score": 1.0,
+              "eval_status": 1,
+              "details": {
+                "rubric_scores": null
+              }
+            },
+            {
+              "metric_name": "response_match_score",
+              "threshold": 0.3,
+              "criterion": {
+                "threshold": 0.3,
+                "include_intermediate_responses_in_final": false
+              },
+              "custom_function_path": null,
+              "score": 0.6956521739130435,
+              "eval_status": 1,
+              "details": {
+                "rubric_scores": null
+              }
+            }
+          ]
+        }
+      ],
+      "session_id": "___eval___session___6e78cad4-64d2-4f88-b843-9d54e27acce2",
+      "session_details": null,
+      "user_id": "test_user_id"
+    }
+  ],
+  "creation_timestamp": 1790932813.157082
+}

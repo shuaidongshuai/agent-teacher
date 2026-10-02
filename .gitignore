@@ -33,3 +33,6 @@ node_modules/
 tmp/
 /output/
 /.obsidian/
+gepa_runs/
+skill_vectors.json
+*.db

@@ -1,7 +1,33 @@
 {
   "eval_config": {
     "criteria": {
-      "response_match_score": 0.5
+      "rubric_based_final_response_quality_v1": {
+        "threshold": 0.5,
+        "judge_model_options": {
+          "judge_model": "gemini-2.5-flash",
+          "num_samples": 1
+        },
+        "rubrics": [
+          {
+            "rubric_id": "correct",
+            "rubric_content": {
+              "text_property": "回答在事实上正确，不编造 ADK 里不存在的概念或错误结论"
+            }
+          },
+          {
+            "rubric_id": "concise",
+            "rubric_content": {
+              "text_property": "回答简洁、直接切中问题，不冗长、不跑题、不堆无关示例"
+            }
+          },
+          {
+            "rubric_id": "chinese",
+            "rubric_content": {
+              "text_property": "使用中文回答"
+            }
+          }
+        ]
+      }
     }
   },
   "app_name": "adv_04_optimize",

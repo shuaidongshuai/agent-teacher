@@ -13,6 +13,17 @@ A2A（Agent-to-Agent）是一个开放协议，让不同进程/机器/框架的 
 """
 
 import os
+from pathlib import Path
+
+# 关键：uvicorn 直接 import 本模块跑服务，不经过 adk CLI，
+# 不会自动加载 .env。所以这里主动读一次项目根目录的 .env，
+# 否则 GOOGLE_GENAI_USE_VERTEXAI / API Key 等配置进不来，会报"找不到 api_key"。
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+except ImportError:
+    pass
 
 from google.adk.agents import LlmAgent
 from google.adk.a2a.utils.agent_to_a2a import to_a2a
