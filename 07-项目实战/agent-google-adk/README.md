@@ -83,6 +83,7 @@ adk eval s02_function_tools s02_function_tools/s02_function_tools.evalset.json
 | 进阶04 | `adv_04_optimize` | GEPA 提示词自动优化（`adk optimize`） | `pip install "google-adk[eval]"` |
 | 进阶05 | `adv_05_skills` | 加载 + 检索多个本地 Skill（`google.adk.skills`） | 无（`demo.py` 离线可跑） |
 | 进阶06 | `adv_06_eval` | 评测闭环：evalset + `adk eval` + CI 回归闸门 | 无（跑 eval 需凭证） |
+| 进阶07 | `adv_07_interrupt` | 可打断/可纠正：执行中插话打断，自研 WebSocket 网页 | 无（默认 mock 离线可跑） |
 
 > 进阶04 的 GEPA 原理、何时用、相比手动调 prompt 的优势、断点续跑与停止方式，见 [adv_04_optimize/README.md](adv_04_optimize/README.md)。
 > 进阶05 是**可生产级**写法（应对"skill 上千"）：不把全量目录塞进 prompt，而用两段式工具 `search_skills`(top-k 候选) → `load_skill`(命中再取正文)。检索在 [skill_index.py](adv_05_skills/skill_index.py)：**L1（name+desc[+向量]）常驻内存、L2（正文）命中才从磁盘懒加载**；向量按内容 hash **落盘缓存 + 增量嵌入**（缓存全热则启动零嵌入调用）；默认关键词、`ADK_SKILL_EMBEDDING=1` 切 Gemini 向量检索，离线/无凭证自动降级。
@@ -121,6 +122,9 @@ ADK_SKILL_EMBEDDING=1 adk run adv_05_skills
 # 进阶06：评测闭环（需凭证，会实际跑 agent 再对比）
 adk eval adv_06_eval adv_06_eval/adv_06_eval.evalset.json
 python adv_06_eval/ci_gate.py     # 当 CI 回归闸门：掉分则非零退出
+
+# 进阶07：可打断聊天 Agent（默认 mock 离线，无需 Key）
+python -m adv_07_interrupt.server   # 浏览器开 http://127.0.0.1:8000，执行中可插话打断
 ```
 
 ## 目录结构

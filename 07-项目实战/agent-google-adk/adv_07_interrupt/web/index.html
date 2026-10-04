@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>可打断聊天 Agent（ADK）</title>
+  <style>
+    /* 极简聊天界面；重点在交互逻辑，样式够用即可 */
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, "PingFang SC", system-ui, sans-serif;
+           background: #f5f5f7; color: #1d1d1f; height: 100vh; display: flex; flex-direction: column; }
+    header { padding: 12px 18px; background: #fff; border-bottom: 1px solid #e5e5ea;
+             display: flex; align-items: center; gap: 12px; }
+    header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+    #status { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: #e8f5e9; color: #2e7d32; }
+    #status.working { background: #fff3e0; color: #e65100; }
+    .hint { font-size: 12px; color: #86868b; }
+    #log { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+    .row { display: flex; }
+    .row.user { justify-content: flex-end; }
+    .bubble { max-width: 72%; padding: 9px 13px; border-radius: 14px; font-size: 14px; line-height: 1.5;
+              white-space: pre-wrap; word-break: break-word; }
+    .user .bubble { background: #0a84ff; color: #fff; border-bottom-right-radius: 4px; }
+    .assistant .bubble { background: #fff; border: 1px solid #e5e5ea; border-bottom-left-radius: 4px; }
+    .tool { align-self: flex-start; font-size: 12.5px; color: #3a3a3c; background: #ececf1;
+            padding: 6px 11px; border-radius: 10px; font-family: ui-monospace, Menlo, monospace; }
+    .tool.result { background: #e3f2fd; }
+    .notice { align-self: center; font-size: 12.5px; color: #b26a00; background: #fff8e1;
+              padding: 5px 12px; border-radius: 999px; }
+    .notice.error { color: #c62828; background: #ffebee; }
+    footer { padding: 12px 18px; background: #fff; border-top: 1px solid #e5e5ea; display: flex; gap: 10px; }
+    #text { flex: 1; padding: 10px 13px; border: 1px solid #d2d2d7; border-radius: 10px; font-size: 14px; outline: none; }
+    #text:focus { border-color: #0a84ff; }
+    button { padding: 10px 18px; border: none; border-radius: 10px; background: #0a84ff; color: #fff;
+             font-size: 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>可打断聊天 Agent · ADK</h1>
+    <span id="status">空闲</span>
+    <span class="hint">试「调研北京的天气」（依次调用 3 个工具，中断点多），趁它执行时再发「改成调研上海」或「停」。</span>
+  </header>
+
+  <div id="log"></div>
+
+  <footer>
+    <input id="text" placeholder="输入消息，回车发送（执行中也可发，用来纠正 / 打断）" autocomplete="off" />
+    <button id="send">发送</button>
+  </footer>
+
+  <script>
+    // ====== WebSocket：与 server.py 的 /ws 全双工通信 ======
+    const log = document.getElementById("log");
+    const input = document.getElementById("text");
+    const statusEl = document.getElementById("status");
+    const ws = new WebSocket(`ws://${location.host}/ws`);
+
+    let liveAssistant = null; // 正在流式输出的 assistant 气泡（用于合并 partial token）
+
+    function scroll() { log.scrollTop = log.scrollHeight; }
+
+    function addRow(cls, inner) {
+      const row = document.createElement("div");
+      row.className = "row " + cls;
+      row.innerHTML = inner;
+      log.appendChild(row);
+      scroll();
+      return row;
+    }
+
+    // ====== 处理服务端推送的各类事件 ======
+    ws.onmessage = (e) => {
+      const m = JSON.parse(e.data);
+      if (m.type === "user_echo") {
+        liveAssistant = null;
+        addRow("user", `<div class="bubble">${escapeHtml(m.text)}</div>`);
+      } else if (m.type === "assistant") {
+        if (m.partial) { // 真实模型流式：把 token 累加到同一个气泡
+          if (!liveAssistant) liveAssistant = addRow("assistant", `<div class="bubble"></div>`).querySelector(".bubble");
+          liveAssistant.textContent += m.text;
+          scroll();
+        } else {         // 整条产出（mock），或流式的收尾
+          if (liveAssistant) { liveAssistant.textContent = m.text; liveAssistant = null; }
+          else addRow("assistant", `<div class="bubble">${escapeHtml(m.text)}</div>`);
+        }
+      } else if (m.type === "tool_call") {
+        liveAssistant = null;
+        addRow("", `<div class="tool">🔧 调用 ${escapeHtml(m.name)}(${escapeHtml(JSON.stringify(m.args))})</div>`);
+      } else if (m.type === "tool_result") {
+        addRow("", `<div class="tool result">✅ ${escapeHtml(m.name)} → ${escapeHtml(m.content)}</div>`);
+      } else if (m.type === "interrupt") {
+        addRow("", `<div class="notice">⛔ ${escapeHtml(m.text)}</div>`);
+      } else if (m.type === "status") {
+        const working = m.text === "working";
+        statusEl.textContent = working ? "运行中…" : "空闲";
+        statusEl.className = working ? "working" : "";
+      } else if (m.type === "error") {
+        addRow("", `<div class="notice error">⚠️ ${escapeHtml(m.text)}</div>`);
+      }
+    };
+
+    ws.onclose = () => { statusEl.textContent = "连接已断开"; };
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    }
+
+    // ====== 发送：注意输入框【始终可用】，这样执行中也能插话打断 ======
+    function send() {
+      const text = input.value.trim();
+      if (!text) return;
+      if (ws.readyState !== WebSocket.OPEN) {
+        // 连接没就绪时别静默吞掉用户输入，给出明确提示，并保留文本
+        addRow("", `<div class="notice error">⚠️ 连接未就绪，发送失败，请稍候或刷新页面</div>`);
+        return;
+      }
+      ws.send(JSON.stringify({ text }));
+      input.value = "";
+    }
+    document.getElementById("send").onclick = send;
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
+  </script>
+</body>
+</html>

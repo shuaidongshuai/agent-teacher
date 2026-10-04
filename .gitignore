@@ -36,3 +36,4 @@ tmp/
 gepa_runs/
 skill_vectors.json
 *.db
+/07-项目实战/agent-google-adk/adv_07_interrupt/sandbox/
