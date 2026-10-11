@@ -47,9 +47,10 @@
 7. [7.Agentic RAG：当Agent遇见检索.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/7.Agentic%20RAG：当Agent遇见检索.md)
 8. [8.Agent记忆系统.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/8.Agent记忆系统.md)
 9. [9.Code Agent.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/9.Code%20Agent.md)
-10. [10.LangGraph入门：作用、优势、常用API与应用场景.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/10.LangGraph入门：作用、优势、常用API与应用场景.md)
-11. [11.Harness Engineering：在Agent时代如何驾驭智能体.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/11.Harness%20Engineering：在Agent时代如何驾驭智能体.md)
-12. [12.Loop Engineering：让Agent任务持续流动的工程闭环.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/12.Loop%20Engineering：让Agent任务持续流动的工程闭环.md)
+10. [9.5.LangChain入门：定位、生态与它和LangGraph的关系.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/9.5.LangChain入门：定位、生态与它和LangGraph的关系.md)
+11. [10.LangGraph入门：作用、优势、常用API与应用场景.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/10.LangGraph入门：作用、优势、常用API与应用场景.md)
+12. [11.Harness Engineering：在Agent时代如何驾驭智能体.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/11.Harness%20Engineering：在Agent时代如何驾驭智能体.md)
+13. [12.Loop Engineering：让Agent任务持续流动的工程闭环.md](/Users/chenmingdong01/Documents/AI/agent/05-Agent/12.Loop%20Engineering：让Agent任务持续流动的工程闭环.md)
 
 ## 5. 本章核心问题
 

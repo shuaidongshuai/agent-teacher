@@ -26,13 +26,14 @@
 
 对照你已经做过的 ADK 项目，这个循环正是框架替你转的部分：
 
-| 你手写的部分（本项目） | ADK 里对应的是谁 |
-|---|---|
-| `agent_turn()` 里的 while 循环 | `Runner.run_async()` 的事件流 |
-| `TOOLS` + `FunctionDeclaration` 声明 | `LlmAgent(tools=[...])` |
-| `send_tool_results()` 把结果拼回历史 | ADK 的 `session.state` / 事件回填 |
-| `approve()` 权限门 | ADK 回合制 + 你在 `adv_07_interrupt` 手搓的中断总线 |
-| `MockModel` | 你写过的 `mock_llm.py` |
+
+| 你手写的部分（本项目）               | ADK 里对应的是谁                                   |
+| ------------------------------------ | -------------------------------------------------- |
+| `agent_turn()` 里的 while 循环       | `Runner.run_async()` 的事件流                      |
+| `TOOLS` + `FunctionDeclaration` 声明 | `LlmAgent(tools=[...])`                            |
+| `send_tool_results()` 把结果拼回历史 | ADK 的`session.state` / 事件回填                   |
+| `approve()` 权限门                   | ADK 回合制 + 你在`adv_07_interrupt` 手搓的中断总线 |
+| `MockModel`                          | 你写过的`mock_llm.py`                              |
 
 一句话：**框架帮你转循环、管历史、拼协议；本质没变。手写一遍，框架对你就不再是黑盒。**
 
@@ -58,25 +59,53 @@ python3 mini_agent.py
 GOOGLE_GENAI_USE_VERTEXAI=TRUE
 GOOGLE_CLOUD_PROJECT=xiling-453607
 GOOGLE_CLOUD_LOCATION=global
-GOOGLE_APPLICATION_CREDENTIALS=/Users/chenmingdong01/Documents/work/gcs_credentials.json
+GOOGLE_APPLICATION_CREDENTIALS=/Users/
 HTTPS_PROXY=http://127.0.0.1:7890   # 该网络需开代理才能换 token
 ```
 
 ```bash
-python3 mini_agent.py --real
+python3 mini_agent.py --backend gemini   # 或老写法 --real（等价）
 # 试试：读取 README.md 并总结 / 在 data 目录新建一个 hello.txt 写入“你好”
 ```
 
 此时模型会**自己决定**调用哪个工具、调几次。遇到 `write_file`/`run_shell` 会先问你 `y/N`。
 
-> 工作目录默认是当前目录，可用环境变量覆盖：`AGENT_WORKSPACE=./data python3 mini_agent.py --real`
+### 3. 真实 OpenAI 模式（填个 api_key 就能用）
+
+最省事的真实后端——不用项目号、不用凭证、不用代理，`.env` 里有个 key 就能跑：
+
+```bash
+pip install openai                  # 懒加载：只有用 --backend openai 时才需要装
+```
+
+```bash
+# .env —— 官方 OpenAI
+OPENAI_API_KEY=sk-xxxx
+# OPENAI_BASE_URL=                  # 可选：接厂内/第三方 OpenAI 兼容网关时填，官方留空
+```
+
+```bash
+python3 mini_agent.py --backend openai
+python3 mini_agent.py --backend openai --model gpt-6   # 换模型只改一个字符串
+```
+
+> 这个后端走的是 **Responses API**（`client.responses.create`），不是老的 `chat.completions`——
+> 工具声明用扁平结构 `{type, name, description, parameters}`、历史用 `input` 项列表、工具结果回
+> `function_call_output`（靠 `call_id` 跟模型输出的 `function_call` 对上）。`OPENAI_BASE_URL` 会被读取
+> 并传给 `OpenAI(base_url=...)`，接任何支持 Responses 格式的兼容网关都行；官方 OpenAI 留空即可。
+
+和 Gemini 后端对外是**同一个接口**（`send_user` / `generate` / `send_tool_results`），主循环
+对它俩一视同仁；差别只在各自内部怎么存历史、怎么拼 function calling 协议——这正是「换后端
+不改主循环」想让你看到的点。
+
+> 工作目录默认是当前目录，可用环境变量覆盖：`AGENT_WORKSPACE=./data python3 mini_agent.py --backend openai`
 
 ## 代码地图（都在一个文件里，从上往下读）
 
 - **规范化结构** `ToolCall` / `ModelTurn`：主循环只认这两个结构，和用哪个模型无关。
 - **第 1 件事 工具**：`read_file` / `write_file` / `list_dir` / `run_shell` + `TOOLS` 注册表（含 JSON Schema 和“是否需要确认”）。
 - **权限与分发** `approve()` / `dispatch()`。
-- **两个后端** `MockModel` / `GeminiModel`：各自管自己的历史格式，对外是同一个接口。
+- **三个后端** `MockModel` / `GeminiModel` / `OpenAIModel`：各自管自己的历史格式，对外是同一个接口。
 - **第 2+3 件事 主循环** `agent_turn()`：**全文最该精读的 30 行**。
 
 ## 练习（从易到难，逐层逼近真实 Agent）

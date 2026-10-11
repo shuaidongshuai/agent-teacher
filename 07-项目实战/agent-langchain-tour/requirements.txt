@@ -1,0 +1,16 @@
+# LangChain v1 全景实战依赖
+# 安装：pip install -r requirements.txt
+langchain>=1.0.0
+langgraph>=1.0.0
+python-dotenv>=1.0.0
+
+# --- 模型接入：按你用的方式装对应集成包（两种格式二选一即可）---
+# 方式二 api_key / OpenAI 兼容端点：
+langchain-openai>=1.0.0
+# 方式一 Gemini 秘钥 / Google AI Studio：
+langchain-google-genai>=3.0.0
+# 若走 Vertex AI（企业/GCP），再装：
+# langchain-google-vertexai>=3.0.0
+
+# 06 长期记忆的语义检索示例用到（可选，仅跑该脚本的语义部分时需要）
+numpy>=1.26.0

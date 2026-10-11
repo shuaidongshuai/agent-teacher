@@ -73,6 +73,7 @@
 - [agent-digital-employee-multi-agent/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-digital-employee-multi-agent/README.md)
 - [11.Google-ADK智能体框架实战.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/11.Google-ADK智能体框架实战.md)
 - [agent-google-adk/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-google-adk/README.md)
+- [agent-langchain-tour/README.md](/Users/chenmingdong01/Documents/AI/agent/07-项目实战/agent-langchain-tour/README.md) —— LangChain v1 全景实战（横向扫一遍框架能力：模型/消息/提示词/工具/短期+长期记忆/记忆管理/高级功能）
 
 ## 5. 推荐阅读与实战顺序
 
